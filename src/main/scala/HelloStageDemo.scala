@@ -2,9 +2,10 @@ import java.io.{File, FileWriter}
 import javafx.application.Application
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
+import javafx.geometry.Orientation
 import javafx.scene.{Group, Scene}
 import javafx.scene.control.{Button, Label, TextField}
-import javafx.scene.layout.{Pane, StackPane}
+import javafx.scene.layout.{FlowPane, Pane, StackPane}
 import javafx.scene.text.Text
 import javafx.stage.Stage
 
@@ -21,16 +22,9 @@ class HelloStageDemo extends Application {
     val delete = new Button("Delete All")
     val save = new Button("Save")
     val clear = new Button("Clear BD")
-    val btn = new Button("Say 'Hello World'")
+
     val firstName = new TextField("Name")
     val number = new TextField("Number")
-    val label = new Label("First Name")
-
-    btn.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(e: ActionEvent) {
-        println("Hello World!")
-      }
-    })
 
     delete.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
@@ -52,43 +46,36 @@ class HelloStageDemo extends Application {
 
         val no = new Button("No")
         val yes = new Button("Yes")
-        val lay = new StackPane()
-        no.setLayoutX(10)
-        no.setLayoutY(10)
-        yes.setLayoutX(30)
-        yes.setLayoutY(30)
+        val lay = new FlowPane()
         lay.getChildren.add(no)
         lay.getChildren.add(yes)
 
-        val sec = new Scene(lay, 200, 100)
-
         val secSt = new Stage()
-        secSt.setTitle("NEW")
-        secSt.setScene(sec)
-        secSt.show()
+        secSt.setTitle("Точно хотите очистит БД?")
+        secSt.setScene(new Scene(lay, 200, 100))
+        secSt.show
+
+        yes.setOnAction(new EventHandler[ActionEvent] {
+          override def handle(e: ActionEvent) {
+            new FileWriter(new File("test.csv"), false)
+            secSt.close()
+          }
+        })
+        no.setOnAction(new EventHandler[ActionEvent] {
+          override def handle(e: ActionEvent) {
+            secSt.close()
+          }
+        })
       }
     })
 
-    val root = new Pane()
-    btn.setLayoutX(0)
-    btn.setLayoutY(0)
-    firstName.setLayoutX(0)
-    firstName.setLayoutY(30)
-    number.setLayoutX(0)
-    number.setLayoutY(60)
-    label.setLayoutX(155)
-    label.setLayoutY(35)
-    delete.setLayoutX(0)
-    delete.setLayoutY(90)
-    save.setMaxWidth(50)
-    save.setLayoutX(0)
-    save.setLayoutY(120)
-    clear.setLayoutX(0)
-    clear.setLayoutY(150)
-    root.getChildren.add(btn)
+    val root = new FlowPane()
+    save.setMaxWidth(Double.MaxValue)
+    delete.setMaxWidth(Double.MaxValue)
+    clear.setMaxWidth(Double.MaxValue)
+    root.setOrientation(Orientation.VERTICAL)
     root.getChildren.add(firstName)
     root.getChildren.add(number)
-    root.getChildren.add(label)
     root.getChildren.add(delete)
     root.getChildren.add(save)
     root.getChildren.add(clear)

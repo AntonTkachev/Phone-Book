@@ -1,21 +1,19 @@
 import java.io.{File, FileWriter}
 import javafx.application.Application
-import javafx.event.ActionEvent
-import javafx.event.EventHandler
+import javafx.event.{ActionEvent, EventHandler}
 import javafx.geometry.Orientation
-import javafx.scene.{Group, Scene}
-import javafx.scene.control.{Button, Label, TextField}
-import javafx.scene.layout.{FlowPane, Pane, StackPane}
-import javafx.scene.text.Text
+import javafx.scene.Scene
+import javafx.scene.control.{Button, TextField}
+import javafx.scene.layout.FlowPane
 import javafx.stage.Stage
 
-object HelloStageDemo {
+object Interface {
   def main(args: Array[String]) {
-    Application.launch(classOf[HelloStageDemo], args: _*)
+    Application.launch(classOf[Interface], args: _*)
   }
 }
 
-class HelloStageDemo extends Application {
+class Interface extends Application {
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")

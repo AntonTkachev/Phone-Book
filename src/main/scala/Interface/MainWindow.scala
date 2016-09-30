@@ -21,7 +21,7 @@ class MainWindow extends Application {
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
     val delete = new Button("Delete All")
-    val save = new Button("Save")
+    val addNewContact = new Button("Add new contact")
 
     val clearWindow = new ClearWindow()
     val clear = clearWindow.clear
@@ -36,10 +36,10 @@ class MainWindow extends Application {
       }
     })
 
-    save.setOnAction(new EventHandler[ActionEvent] {
+    addNewContact.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
         val pw = new FileWriter(new File("test.csv"), true)
-        pw.write(s"${firstName.getText}; ${number.getText};")
+        pw.write(s"${firstName.getText} | ${number.getText};")
         pw.close()
       }
     })
@@ -59,13 +59,28 @@ class MainWindow extends Application {
     showContacts.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
     showContacts.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
-        val lay = new FlowPane()
-
         val stageWithContacts = new Stage()
-        stageWithContacts.setTitle("Все контакты")
-        stageWithContacts.setScene(new Scene(lay, 300, 250))
-        stageWithContacts.show()
 
+
+        import java.util.Scanner
+        val scaner = new Scanner(new File("test.csv"))
+
+        val listView: ListView[String] = new ListView()
+
+        scaner.useDelimiter(",")
+        while (scaner.hasNext()) {
+          val xx = scaner.next()
+          val xxx = xx.split(';')
+          for(x <- xxx.indices) {
+            listView.getItems().add(xxx(x))
+          }
+        }
+        scaner.close()
+
+        val hbox = new HBox(listView)
+        stageWithContacts.setTitle("Все контакты")
+        stageWithContacts.setScene(new Scene(hbox, 300, 250))
+        stageWithContacts.show()
       }
     })
 
@@ -73,14 +88,14 @@ class MainWindow extends Application {
     val hbox = new HBox(menuButton)
 
     val root = new FlowPane()
-    save.setMaxWidth(Double.MaxValue)
+    addNewContact.setMaxWidth(Double.MaxValue)
     delete.setMaxWidth(Double.MaxValue)
     clear.setMaxWidth(Double.MaxValue)
     root.setOrientation(Orientation.VERTICAL)
     root.getChildren.add(firstName)
     root.getChildren.add(number)
     root.getChildren.add(delete)
-    root.getChildren.add(save)
+    root.getChildren.add(addNewContact)
     root.getChildren.add(clear)
     root.getChildren.add(0, hbox)
     primaryStage.setScene(new Scene(root, 300, 250))

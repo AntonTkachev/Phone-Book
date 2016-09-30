@@ -1,3 +1,5 @@
+package Interface
+
 import java.io.{File, FileWriter}
 import javafx.application.Application
 import javafx.event.{ActionEvent, EventHandler}
@@ -8,19 +10,21 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout.{FlowPane, HBox}
 import javafx.stage.Stage
 
-object Interface {
+object MainWindow {
   def main(args: Array[String]) {
-    Application.launch(classOf[Interface], args: _*)
+    Application.launch(classOf[MainWindow], args: _*)
   }
 }
 
-class Interface extends Application {
+class MainWindow extends Application {
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
     val delete = new Button("Delete All")
     val save = new Button("Save")
-    val clear = new Button("Clear BD")
+
+    val clearWindow = new ClearWindow()
+    val clear = clearWindow.clear
 
     val firstName = new TextField("Name")
     val number = new TextField("Number")
@@ -40,33 +44,8 @@ class Interface extends Application {
       }
     })
 
-    clear.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(e: ActionEvent) {
+    clearWindow.openClearWindow(clear)
 
-        val no = new Button("No")
-        val yes = new Button("Yes")
-        val lay = new FlowPane()
-        lay.getChildren.add(no)
-        lay.getChildren.add(yes)
-
-        val secSt = new Stage()
-        secSt.setTitle("Точно хотите очистит БД?")
-        secSt.setScene(new Scene(lay, 200, 100))
-        secSt.show
-
-        yes.setOnAction(new EventHandler[ActionEvent] {
-          override def handle(e: ActionEvent) {
-            new FileWriter(new File("test.csv"), false)
-            secSt.close()
-          }
-        })
-        no.setOnAction(new EventHandler[ActionEvent] {
-          override def handle(e: ActionEvent) {
-            secSt.close()
-          }
-        })
-      }
-    })
     val close = new MenuItem("Close")
     val showContacts = new MenuItem("Show contacts")
 

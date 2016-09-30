@@ -69,10 +69,10 @@ class MainWindow extends Application {
 
         scaner.useDelimiter(",")
         while (scaner.hasNext()) {
-          val xx = scaner.next()
-          val xxx = xx.split(';')
-          for(x <- xxx.indices) {
-            listView.getItems().add(xxx(x))
+          val allContactsFromBD = scaner.next()
+          val contact = allContactsFromBD.split(';')
+          for (num <- contact.indices) {
+            listView.getItems.add(contact(num))
           }
         }
         scaner.close()

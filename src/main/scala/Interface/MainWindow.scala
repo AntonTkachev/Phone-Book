@@ -1,6 +1,7 @@
 package Interface
 
-import java.io.{File, FileWriter}
+import java.util.Scanner
+import java.io.File
 import javafx.application.Application
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.geometry.Orientation
@@ -17,89 +18,85 @@ object MainWindow {
 }
 
 class MainWindow extends Application {
+  val pane = new FlowPane()
+
+  val stageWithContacts = new Stage()
+
+  val buttonDelete = new Button("Delete All")
+  val buttonNewContact = new Button("Add new contact")
+
+  val textFieldName = new TextField("Name")
+  val textFieldNumber = new TextField("Number")
+
+  val menuItemClose = new MenuItem("Close")
+  val menuItemShowContacts = new MenuItem("Show contacts")
+
+  val menuButtonEdit = new MenuButton("Edit", null, menuItemClose, menuItemShowContacts)
+
+  val scanner = new Scanner(new File(Utils.pathToCsvFile))
+
+  val listView: ListView[String] = new ListView()
+
+  val clearWindow = new ClearWindow()
+  val clearButton = clearWindow.clearWindowButton
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
-    val delete = new Button("Delete All")
-    val addNewContact = new Button("Add new contact")
 
-    val clearWindow = new ClearWindow()
-    val clear = clearWindow.clear
-
-    val firstName = new TextField("Name")
-    val number = new TextField("Number")
-
-    delete.setOnAction(new EventHandler[ActionEvent] {
+    buttonDelete.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
-        firstName.setText("")
-        number.setText("")
+        textFieldName.setText("")
+        textFieldNumber.setText("")
       }
     })
 
-    addNewContact.setOnAction(new EventHandler[ActionEvent] {
+    buttonNewContact.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
-        val pw = new FileWriter(new File("test.csv"), true)
-        pw.write(s"${firstName.getText} | ${number.getText};")
-        pw.close()
+        Utils.writeToDB()
       }
     })
 
-    clearWindow.openClearWindow(clear)
+    clearWindow.openClearWindowWithButton(clearButton)
 
-    val close = new MenuItem("Close")
-    val showContacts = new MenuItem("Show contacts")
-
-    close.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
-    close.setOnAction(new EventHandler[ActionEvent] {
+    menuItemClose.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
+    menuItemClose.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
         primaryStage.close()
       }
     })
 
-    showContacts.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
-    showContacts.setOnAction(new EventHandler[ActionEvent] {
+    menuItemShowContacts.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
+    menuItemShowContacts.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
-        val stageWithContacts = new Stage()
 
-
-        import java.util.Scanner
-        val scaner = new Scanner(new File("test.csv"))
-
-        val listView: ListView[String] = new ListView()
-
-        scaner.useDelimiter(",")
-        while (scaner.hasNext()) {
-          val allContactsFromBD = scaner.next()
+        scanner.useDelimiter(",")
+        while (scanner.hasNext()) {
+          val allContactsFromBD = scanner.next()
           val contact = allContactsFromBD.split(';')
           for (num <- contact.indices) {
             listView.getItems.add(contact(num))
           }
         }
-        scaner.close()
+        scanner.close()
 
-        val hbox = new HBox(listView)
         stageWithContacts.setTitle("Все контакты")
-        stageWithContacts.setScene(new Scene(hbox, 300, 250))
+        stageWithContacts.setScene(new Scene(new HBox(listView), 300, 250))
         stageWithContacts.show()
       }
     })
 
-    val menuButton = new MenuButton("Edit", null, close, showContacts)
-    val hbox = new HBox(menuButton)
-
-    val root = new FlowPane()
-    addNewContact.setMaxWidth(Double.MaxValue)
-    delete.setMaxWidth(Double.MaxValue)
-    clear.setMaxWidth(Double.MaxValue)
-    root.setOrientation(Orientation.VERTICAL)
-    root.getChildren.add(firstName)
-    root.getChildren.add(number)
-    root.getChildren.add(delete)
-    root.getChildren.add(addNewContact)
-    root.getChildren.add(clear)
-    root.getChildren.add(0, hbox)
-    primaryStage.setScene(new Scene(root, 300, 250))
-    primaryStage.show
+    buttonNewContact.setMaxWidth(Double.MaxValue)
+    buttonDelete.setMaxWidth(Double.MaxValue)
+    clearButton.setMaxWidth(Double.MaxValue)
+    pane.setOrientation(Orientation.VERTICAL)
+    pane.getChildren.add(textFieldName)
+    pane.getChildren.add(textFieldNumber)
+    pane.getChildren.add(buttonDelete)
+    pane.getChildren.add(buttonNewContact)
+    pane.getChildren.add(clearButton)
+    pane.getChildren.add(0, new HBox(menuButtonEdit))
+    primaryStage.setScene(new Scene(pane, 300, 250))
+    primaryStage.show()
   }
 
 }

@@ -6,13 +6,9 @@ object Utils {
 
   val pathToCsvFile = "test.csv"
 
-  val main = new MainWindow()
-  val name = main.textFieldName
-  val number = main.textFieldNumber
-
-  def writeToDB() = {
+  def writeToDB(name: String, number: String) = {
     val file = new FileWriter(new File(pathToCsvFile), true)
-    file.write(s"${name.getText} | ${number.getText};")
+    file.write(s"$name | $number;")
     file.close()
   }
 

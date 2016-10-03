@@ -8,13 +8,10 @@ import javafx.scene.layout._
 import javafx.stage.Stage
 
 class ClearWindow {
-  val clearWindowButton = new Button("Clear BD")
-
   val warningStage = new Stage()
 
   val buttonNo = new Button("No")
   val buttonYes = new Button("Yes")
-  val pane = new Pane()
 
   val layoutXForButton = 115
   val layoutYForButton = 70
@@ -25,6 +22,8 @@ class ClearWindow {
   def openClearWindowWithButton(value: Button) = {
     value.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
+
+        val pane = new Pane()
 
         buttonNo.setLayoutX(layoutXForButton)
         buttonNo.setMinSize(layoutXForButton, layoutYForButton)

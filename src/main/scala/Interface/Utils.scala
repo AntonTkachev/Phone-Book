@@ -16,10 +16,16 @@ object Utils {
   val layoutXForScene = 220
   val layoutYForScene = 100
 
+  def writeStrToCSV(str : String) ={
+      val file = new FileWriter(new File(pathToCsvFile), true)
+      file.write(str)
+      file.close()
+  }
+
   def writeToDB(name: String, number: String) = {
     val file = new FileWriter(new File(pathToCsvFile), true)
     if (name.nonEmpty && number.nonEmpty) {
-      file.write(s"$name | $number;")
+      file.write(s"$name  $number;")
       file.close()
     }
     else {

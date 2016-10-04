@@ -8,7 +8,7 @@ import javafx.geometry.Orientation
 import javafx.scene.Scene
 import javafx.scene.control._
 import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
-import javafx.scene.layout.{FlowPane, HBox}
+import javafx.scene.layout.{FlowPane, HBox, VBox}
 import javafx.stage.Stage
 
 object MainWindow {
@@ -25,6 +25,8 @@ class MainWindow extends Application {
   val buttonDelete = new Button("Delete All")
   val buttonNewContact = new Button("Add new contact")
   val buttonClear = new Button("Clear BD")
+  val buttonClearAll = new Button("Clear All")
+  val buttonClearItem = new Button("Clear Item")
 
   val textFieldName = new TextField("Name")
   val textFieldNumber = new TextField("Number")
@@ -78,8 +80,33 @@ class MainWindow extends Application {
         }
         scanner.close()
 
+        val vBox = new VBox()
+        vBox.getChildren.addAll(listView, buttonClearAll, buttonClearItem)
+
+        buttonClearAll.setOnAction(new EventHandler[ActionEvent] {
+          override def handle(e: ActionEvent) {
+            listView.getItems.clear()
+            Utils.clearDB()
+          }
+        })
+
+        buttonClearItem.setOnAction(new EventHandler[ActionEvent] {
+          override def handle(e: ActionEvent) {
+            val selectItem = listView.getSelectionModel.getSelectedItem
+            listView.getItems.remove(selectItem)
+            val scanner = new Scanner(new File(Utils.pathToCsvFile))
+            scanner.useDelimiter(",")
+            while (scanner.hasNext()) {
+              val allContactsFromBD = scanner.next()
+              val newBase = allContactsFromBD.replaceFirst(s"$selectItem;", "") //TODO костыль шо пздц
+              Utils.clearDB()
+              Utils.writeStrToCSV(newBase)
+            }
+          }
+        })
+
         stageWithContacts.setTitle("Все контакты")
-        stageWithContacts.setScene(new Scene(new HBox(listView), 300, 250))
+        stageWithContacts.setScene(new Scene(vBox, 300, 250))
         stageWithContacts.show()
       }
     })

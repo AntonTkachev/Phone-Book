@@ -1,6 +1,5 @@
 package Interface
 
-import java.io.{File, FileWriter}
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.Scene
 import javafx.scene.control.Button

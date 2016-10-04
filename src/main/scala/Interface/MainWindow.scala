@@ -27,6 +27,7 @@ class MainWindow extends Application {
   val buttonClear = new Button("Clear BD")
   val buttonClearAll = new Button("Clear All")
   val buttonClearItem = new Button("Clear Item")
+  val buttonChange = new Button("SHOW MUST GO ON")
 
   val textFieldName = new TextField("Name")
   val textFieldNumber = new TextField("Number")
@@ -75,13 +76,14 @@ class MainWindow extends Application {
           val allContactsFromBD = scanner.next()
           val contact = allContactsFromBD.split(';')
           for (num <- contact.indices) {
-            listView.getItems.add(contact(num))
+            val allContactInfo = contact(num)
+            listView.getItems.add(allContactInfo.split('|').head)
           }
         }
         scanner.close()
 
         val vBox = new VBox()
-        vBox.getChildren.addAll(listView, buttonClearAll, buttonClearItem)
+        vBox.getChildren.addAll(listView, buttonClearAll, buttonClearItem, buttonChange)
 
         buttonClearAll.setOnAction(new EventHandler[ActionEvent] {
           override def handle(e: ActionEvent) {
@@ -102,6 +104,22 @@ class MainWindow extends Application {
               Utils.clearDB()
               Utils.writeStrToCSV(newBase)
             }
+          }
+        })
+
+        buttonChange.setOnAction(new EventHandler[ActionEvent] {
+          override def handle(e: ActionEvent) {
+            val indexSelectItem = listView.getSelectionModel.getSelectedIndex
+            val allItemsFromBD = Utils.scaninig()
+            val selectItemInBD = allItemsFromBD(indexSelectItem)
+            val changeStage = new Stage()
+            val hb = new HBox()
+            val textFieldName = new TextField(selectItemInBD.split('|').head)
+            val textFieldNumber = new TextField(selectItemInBD.split('|')(1))
+            hb.getChildren.addAll(textFieldName,textFieldNumber)
+            changeStage.setTitle("Изменить")
+            changeStage.setScene(new Scene(hb,300,100))
+            changeStage.show()
           }
         })
 

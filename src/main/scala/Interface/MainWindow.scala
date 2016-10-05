@@ -71,17 +71,11 @@ class MainWindow extends Application {
 
         val listView: ListView[String] = new ListView()
 
-        val scanner = new Scanner(new File(Utils.pathToCsvFile))
-        scanner.useDelimiter(",")
-        while (scanner.hasNext()) {
-          val allContactsFromBD = scanner.next()
-          val contact = allContactsFromBD.split(';')
-          for (num <- contact.indices) {
-            val allContactInfo = contact(num)
-            listView.getItems.add(allContactInfo.split('|').head)
-          }
+        val allItemsFromBD = Utils.scaninig()
+        for (num <- allItemsFromBD.indices) {
+          val allContactInfo = allItemsFromBD(num)
+          listView.getItems.add(allContactInfo.split('|').head)
         }
-        scanner.close()
 
         val vBox = new VBox()
         vBox.getChildren.addAll(listView, buttonClearAll, buttonClearItem, buttonChange)

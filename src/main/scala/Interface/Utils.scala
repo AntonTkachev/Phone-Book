@@ -18,21 +18,21 @@ object Utils {
   val layoutYForScene = 100
 
 
-  def scaninig() ={
+  def scanning() = {
     val scanner = new Scanner(new File(Utils.pathToCsvFile))
     scanner.useDelimiter(",")
-    var contact : Array[String] = Array()
+    var contact: Array[String] = Array()
     while (scanner.hasNext()) {
       val allContactsFromBD = scanner.next()
-       contact = allContactsFromBD.split(';')
+      contact = allContactsFromBD.split(';')
     }
     contact
   }
 
-  def writeStrToCSV(str : String) ={
-      val file = new FileWriter(new File(pathToCsvFile), true)
-      file.write(str)
-      file.close()
+  def writeStrToCSV(str: String) = {
+    val file = new FileWriter(new File(pathToCsvFile), true)
+    file.write(str)
+    file.close()
   }
 
   def writeToDB(name: String, number: String) = {

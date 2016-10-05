@@ -71,7 +71,7 @@ class MainWindow extends Application {
 
         val listView: ListView[String] = new ListView()
 
-        val allItemsFromBD = Utils.scaninig()
+        val allItemsFromBD = Utils.scanning()
         for (num <- allItemsFromBD.indices) {
           val allContactInfo = allItemsFromBD(num)
           listView.getItems.add(allContactInfo.split('|').head)
@@ -91,7 +91,7 @@ class MainWindow extends Application {
           override def handle(e: ActionEvent) {
             val indexSelectItem = listView.getSelectionModel.getSelectedIndex
             listView.getItems.remove(indexSelectItem)
-            val allItemsFromBD = Utils.scaninig()
+            val allItemsFromBD = Utils.scanning()
             allItemsFromBD.update(indexSelectItem,"")
             Utils.clearDB()
             for (i <- allItemsFromBD.indices) {
@@ -103,7 +103,7 @@ class MainWindow extends Application {
         buttonChange.setOnAction(new EventHandler[ActionEvent] {
           override def handle(e: ActionEvent) {
             val indexSelectItem = listView.getSelectionModel.getSelectedIndex
-            val allItemsFromBD = Utils.scaninig()
+            val allItemsFromBD = Utils.scanning()
             val selectItemInBD = allItemsFromBD(indexSelectItem)
             val changeStage = new Stage()
             val hb = new HBox()
@@ -115,7 +115,7 @@ class MainWindow extends Application {
               override def handle(e: ActionEvent): Unit = {
                 val newName = textFieldName.getText
                 val newNumber = textFieldNumber.getText
-                val allItemsFromBD = Utils.scaninig()
+                val allItemsFromBD = Utils.scanning()
                 allItemsFromBD.update(indexSelectItem, s"$newName|$newNumber")
                 Utils.clearDB()
                 for (i <- allItemsFromBD.indices) {

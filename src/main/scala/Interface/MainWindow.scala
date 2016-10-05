@@ -24,10 +24,11 @@ class MainWindow extends Application {
 
   val buttonDelete = new Button("Delete All")
   val buttonNewContact = new Button("Add new contact")
-  val buttonClear = new Button("Clear BD")
+  val buttonClearBD = new Button("Clear BD")
   val buttonClearAll = new Button("Clear All")
   val buttonClearItem = new Button("Clear Item")
   val buttonChange = new Button("SHOW MUST GO ON")
+  val buttonSaveChanges = new Button("Save changes")
 
   val textFieldName = new TextField("Name")
   val textFieldNumber = new TextField("Number")
@@ -55,7 +56,7 @@ class MainWindow extends Application {
       }
     })
 
-    clearWindow.openClearWindowWithButton(buttonClear)
+    clearWindow.openClearWindowWithButton(buttonClearBD)
 
     menuItemClose.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
     menuItemClose.setOnAction(new EventHandler[ActionEvent] {
@@ -116,9 +117,23 @@ class MainWindow extends Application {
             val hb = new HBox()
             val textFieldName = new TextField(selectItemInBD.split('|').head)
             val textFieldNumber = new TextField(selectItemInBD.split('|')(1))
-            hb.getChildren.addAll(textFieldName,textFieldNumber)
+            hb.getChildren.addAll(textFieldName, textFieldNumber, buttonSaveChanges)
+
+            buttonSaveChanges.setOnAction(new EventHandler[ActionEvent] {
+              override def handle(e: ActionEvent): Unit = {
+                val newName = textFieldName.getText
+                val newNumber = textFieldNumber.getText
+                val allItemsFromBD = Utils.scaninig()
+                allItemsFromBD.update(indexSelectItem, s"$newName|$newNumber")
+                Utils.clearDB()
+                for (i <- allItemsFromBD.indices) {
+                  Utils.writeStrToCSV(s"${allItemsFromBD(i)};")
+                }
+                changeStage.close()
+              }
+            })
             changeStage.setTitle("Изменить")
-            changeStage.setScene(new Scene(hb,300,100))
+            changeStage.setScene(new Scene(hb, 300, 100))
             changeStage.show()
           }
         })
@@ -131,13 +146,13 @@ class MainWindow extends Application {
 
     buttonNewContact.setMaxWidth(Double.MaxValue)
     buttonDelete.setMaxWidth(Double.MaxValue)
-    buttonClear.setMaxWidth(Double.MaxValue)
+    buttonClearBD.setMaxWidth(Double.MaxValue)
     pane.setOrientation(Orientation.VERTICAL)
     pane.getChildren.add(textFieldName)
     pane.getChildren.add(textFieldNumber)
     pane.getChildren.add(buttonDelete)
     pane.getChildren.add(buttonNewContact)
-    pane.getChildren.add(buttonClear)
+    pane.getChildren.add(buttonClearBD)
     pane.getChildren.add(0, new HBox(menuButtonEdit))
     primaryStage.setScene(new Scene(pane, 300, 250))
     primaryStage.show()

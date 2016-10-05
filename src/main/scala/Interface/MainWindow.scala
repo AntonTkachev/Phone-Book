@@ -95,15 +95,13 @@ class MainWindow extends Application {
 
         buttonClearItem.setOnAction(new EventHandler[ActionEvent] {
           override def handle(e: ActionEvent) {
-            val selectItem = listView.getSelectionModel.getSelectedItem
-            listView.getItems.remove(selectItem)
-            val scanner = new Scanner(new File(Utils.pathToCsvFile))
-            scanner.useDelimiter(",")
-            while (scanner.hasNext()) {
-              val allContactsFromBD = scanner.next()
-              val newBase = allContactsFromBD.replaceFirst(s"$selectItem;", "") //TODO костыль шо пздц
-              Utils.clearDB()
-              Utils.writeStrToCSV(newBase)
+            val indexSelectItem = listView.getSelectionModel.getSelectedIndex
+            listView.getItems.remove(indexSelectItem)
+            val allItemsFromBD = Utils.scaninig()
+            allItemsFromBD.update(indexSelectItem,"")
+            Utils.clearDB()
+            for (i <- allItemsFromBD.indices) {
+              Utils.writeStrToCSV(s"${allItemsFromBD(i)};") //TODO еще раз пересмотреть
             }
           }
         })

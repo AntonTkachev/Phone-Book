@@ -24,7 +24,7 @@ object Utils {
     var contact: Array[String] = Array()
     while (scanner.hasNext()) {
       val allContactsFromBD = scanner.next()
-      contact = allContactsFromBD.split(';')
+      contact = allContactsFromBD.split('\n')
     }
     contact
   }
@@ -38,7 +38,7 @@ object Utils {
   def writeToDB(name: String, number: String) = {
     val file = new FileWriter(new File(pathToCsvFile), true)
     if (name.nonEmpty && number.nonEmpty) {
-      file.write(s"$name|$number;")
+      file.write(s"$name|$number\n")
       file.close()
     }
     else {

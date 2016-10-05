@@ -92,10 +92,12 @@ class MainWindow extends Application {
             val indexSelectItem = listView.getSelectionModel.getSelectedIndex
             listView.getItems.remove(indexSelectItem)
             val allItemsFromBD = Utils.scanning()
-            allItemsFromBD.update(indexSelectItem,"")
+            allItemsFromBD.update(indexSelectItem, "")
             Utils.clearDB()
             for (i <- allItemsFromBD.indices) {
-              Utils.writeStrToCSV(s"${allItemsFromBD(i)};") //TODO еще раз пересмотреть
+              if (allItemsFromBD(i).nonEmpty) {
+                Utils.writeStrToCSV(s"${allItemsFromBD(i)}\n") //TODO еще раз пересмотреть
+              }
             }
           }
         })

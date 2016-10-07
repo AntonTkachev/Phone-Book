@@ -1,9 +1,11 @@
 package view
 
-import javafx.event.{ActionEvent, EventHandler}
+import javafx.event.ActionEvent
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.stage.Stage
+
+import LambdaHelper._
 
 class WarningWindow {
 
@@ -20,11 +22,8 @@ class WarningWindow {
   def warningButtonOK() = {
     warningStage.show()
 
-    //fixme лямбды
-    buttonOk.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(e: ActionEvent) {
-        warningStage.close()
-      }
-    })
+    buttonOk.setOnAction((e: ActionEvent) =>
+      warningStage.close()
+    )
   }
 }

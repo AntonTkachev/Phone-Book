@@ -1,6 +1,6 @@
 package view
 
-import javafx.event.{ActionEvent, EventHandler}
+import javafx.event.ActionEvent
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.layout._
@@ -34,24 +34,18 @@ class ClearWindow {
   warningStage.setResizable(false)
 
   def openClearWindowWithButton(value: Button) = {
-    //fixme используй лямбды - снизу пример
-    value.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(e: ActionEvent) {
+    value.setOnAction((e: ActionEvent) => {
 
-        warningStage.show()
+      warningStage.show()
 
-        //fixme используй лямбды - снизу пример
-        buttonYes.setOnAction(new EventHandler[ActionEvent] {
-          override def handle(e: ActionEvent) {
-            Utils.clearDB()
-            warningStage.close()
-          }
-        })
+      buttonYes.setOnAction((e: ActionEvent) => {
+        Utils.clearDB()
+        warningStage.close()
+      })
 
-        buttonNo.setOnAction((e: ActionEvent) =>
-          warningStage.close()
-        )
-      }
+      buttonNo.setOnAction((e: ActionEvent) =>
+        warningStage.close()
+      )
     })
   }
 }

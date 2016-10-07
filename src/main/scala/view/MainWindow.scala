@@ -1,13 +1,15 @@
 package view
 
 import javafx.application.Application
-import javafx.event.{ActionEvent, EventHandler}
+import javafx.event.ActionEvent
 import javafx.geometry.Orientation
 import javafx.scene.Scene
 import javafx.scene.control._
 import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout.{FlowPane, HBox, VBox}
 import javafx.stage.Stage
+
+import LambdaHelper._
 
 object MainWindow {
   def main(args: Array[String]) {
@@ -42,16 +44,12 @@ class MainWindow extends Application {
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
 
-    buttonDelete.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(e: ActionEvent) {
+    buttonDelete.setOnAction((e: ActionEvent) => {
         textFieldName.setText("")
         textFieldNumber.setText("")
-      }
     })
 
-    //лямбды
-    buttonNewContact.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(e: ActionEvent) {
+    buttonNewContact.setOnAction((e: ActionEvent) => {
 
         val name = textFieldName.getText
         val number = textFieldNumber.getText
@@ -62,21 +60,17 @@ class MainWindow extends Application {
           val str: String = s"${textFieldName.getText}|${textFieldNumber.getText+Constants.LINE_BREAK}"
           Utils.writeStrToCSV(str)
         }
-      }
     })
 
     clearWindow.openClearWindowWithButton(buttonClearBD)
 
     menuItemClose.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
-    menuItemClose.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(e: ActionEvent) {
+    menuItemClose.setOnAction((e: ActionEvent) =>
         primaryStage.close()
-      }
-    })
+    )
 
     menuItemShowContacts.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
-    menuItemShowContacts.setOnAction(new EventHandler[ActionEvent] {
-      override def handle(e: ActionEvent) {
+    menuItemShowContacts.setOnAction((e: ActionEvent) => {
 
         val listView: ListView[String] = new ListView()
 
@@ -89,15 +83,12 @@ class MainWindow extends Application {
         val vBox = new VBox()
         vBox.getChildren.addAll(listView, buttonClearAll, buttonClearItem, buttonChange)
 
-        buttonClearAll.setOnAction(new EventHandler[ActionEvent] {
-          override def handle(e: ActionEvent) {
+        buttonClearAll.setOnAction((e: ActionEvent) => {
             listView.getItems.clear()
             Utils.clearDB()
-          }
         })
 
-        buttonClearItem.setOnAction(new EventHandler[ActionEvent] {
-          override def handle(e: ActionEvent) {
+        buttonClearItem.setOnAction((e: ActionEvent) => {
             val indexSelectItem = listView.getSelectionModel.getSelectedIndex
             listView.getItems.remove(indexSelectItem)
             val allItemsFromBD = Utils.scanning()
@@ -107,12 +98,10 @@ class MainWindow extends Application {
               if (allItemsFromBD(i).nonEmpty) {
                 Utils.writeStrToCSV(s"${allItemsFromBD(i)+Constants.LINE_BREAK}") //TODO еще раз пересмотреть
               }
-            }
           }
         })
 
-        buttonChange.setOnAction(new EventHandler[ActionEvent] {
-          override def handle(e: ActionEvent) {
+        buttonChange.setOnAction((e: ActionEvent) => {
             val indexSelectItem = listView.getSelectionModel.getSelectedIndex
             val allItemsFromBD = Utils.scanning()
             val selectItemInBD = allItemsFromBD(indexSelectItem)
@@ -122,8 +111,7 @@ class MainWindow extends Application {
             val textFieldNumber = new TextField(selectItemInBD.split('|')(1))
             hb.getChildren.addAll(textFieldName, textFieldNumber, buttonSaveChanges)
 
-            buttonSaveChanges.setOnAction(new EventHandler[ActionEvent] {
-              override def handle(e: ActionEvent): Unit = {
+            buttonSaveChanges.setOnAction((e: ActionEvent) => {
                 val newName = textFieldName.getText
                 val newNumber = textFieldNumber.getText
                 val allItemsFromBD = Utils.scanning()
@@ -133,18 +121,15 @@ class MainWindow extends Application {
                   Utils.writeStrToCSV(allItemsFromBD(i)+Constants.LINE_BREAK)
                 }
                 changeStage.close()
-              }
             })
             changeStage.setTitle("Изменить")
             changeStage.setScene(new Scene(hb, 300, 100))
             changeStage.show()
-          }
         })
 
         stageWithContacts.setTitle("Все контакты")
         stageWithContacts.setScene(new Scene(vBox, 300, 250))
         stageWithContacts.show()
-      }
     })
 
     buttonNewContact.setMaxWidth(Double.MaxValue)

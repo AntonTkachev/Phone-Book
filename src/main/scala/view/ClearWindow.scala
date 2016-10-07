@@ -6,6 +6,8 @@ import javafx.scene.control.Button
 import javafx.scene.layout._
 import javafx.stage.Stage
 
+import LambdaHelper._
+
 class ClearWindow {
   private val warningStage = new Stage()
 
@@ -46,11 +48,9 @@ class ClearWindow {
           }
         })
 
-        buttonNo.setOnAction(new EventHandler[ActionEvent] {
-          override def handle(e: ActionEvent) {
-            warningStage.close()
-          }
-        })
+        buttonNo.setOnAction((e: ActionEvent) =>
+          warningStage.close()
+        )
       }
     })
   }

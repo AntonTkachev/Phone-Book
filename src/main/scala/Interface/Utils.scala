@@ -2,9 +2,6 @@ package Interface
 
 import java.io.{File, FileWriter}
 import java.util.Scanner
-import javafx.event.{ActionEvent, EventHandler}
-import javafx.scene.Scene
-import javafx.scene.control.Button
 import javafx.stage.Stage
 
 
@@ -33,26 +30,6 @@ object Utils {
     val file = new FileWriter(new File(pathToCsvFile), true)
     file.write(str)
     file.close()
-  }
-
-  def writeToDB(name: String, number: String) = {
-    val file = new FileWriter(new File(pathToCsvFile), true)
-    if (name.nonEmpty && number.nonEmpty) {
-      file.write(s"$name|$number\n")
-      file.close()
-    }
-    else {
-      val buttonOk = new Button("Заполнены не все поля")
-      warningStage.setScene(new Scene(buttonOk, layoutXForScene, layoutYForScene))
-      warningStage.setResizable(false)
-      warningStage.show()
-
-      buttonOk.setOnAction(new EventHandler[ActionEvent] {
-        override def handle(e: ActionEvent) {
-          warningStage.close()
-        }
-      })
-    }
   }
 
   def clearDB() = {

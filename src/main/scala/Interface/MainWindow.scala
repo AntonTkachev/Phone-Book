@@ -1,7 +1,5 @@
 package Interface
 
-import java.util.Scanner
-import java.io.File
 import javafx.application.Application
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.geometry.Orientation
@@ -39,6 +37,7 @@ class MainWindow extends Application {
   val menuButtonEdit = new MenuButton("Edit", null, menuItemClose, menuItemShowContacts)
 
   val clearWindow = new ClearWindow()
+  val warningWindow = new WarningWindow()
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
@@ -52,7 +51,16 @@ class MainWindow extends Application {
 
     buttonNewContact.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
-        Utils.writeToDB(textFieldName.getText, textFieldNumber.getText)
+
+        val name = textFieldName.getText
+        val number = textFieldNumber.getText
+        if (name.isEmpty || number.isEmpty) {
+          warningWindow.warningButtonOK()
+        }
+        else {
+          val str: String = s"${textFieldName.getText}|${textFieldNumber.getText}\n"
+          Utils.writeStrToCSV(str)
+        }
       }
     })
 

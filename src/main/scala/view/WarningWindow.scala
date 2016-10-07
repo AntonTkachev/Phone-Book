@@ -1,4 +1,4 @@
-package Interface
+package view
 
 import javafx.event.{ActionEvent, EventHandler}
 import javafx.scene.Scene
@@ -7,18 +7,20 @@ import javafx.stage.Stage
 
 class WarningWindow {
 
-  val warningStage = new Stage()
+  private val warningStage = new Stage()
 
-  val buttonOk = new Button("Заполнены не все поля")
+  private val buttonOk = new Button("Заполнены не все поля")
 
-  val layoutXForScene = 220
-  val layoutYForScene = 100
+  private val layoutXForScene = 220
+  private val layoutYForScene = 100
 
-  def warningButtonOK() ={
-    warningStage.setScene(new Scene(buttonOk, layoutXForScene, layoutYForScene))
-    warningStage.setResizable(false)
+  warningStage.setScene(new Scene(buttonOk, layoutXForScene, layoutYForScene))
+  warningStage.setResizable(false)
+
+  def warningButtonOK() = {
     warningStage.show()
 
+    //fixme лямбды
     buttonOk.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
         warningStage.close()

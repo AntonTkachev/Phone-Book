@@ -1,4 +1,4 @@
-package Interface
+package view
 
 import javafx.application.Application
 import javafx.event.{ActionEvent, EventHandler}
@@ -16,28 +16,28 @@ object MainWindow {
 }
 
 class MainWindow extends Application {
-  val pane = new FlowPane()
+  private val pane = new FlowPane()
 
-  val stageWithContacts = new Stage()
+  private val stageWithContacts = new Stage()
 
-  val buttonDelete = new Button("Delete All")
-  val buttonNewContact = new Button("Add new contact")
-  val buttonClearBD = new Button("Clear BD")
-  val buttonClearAll = new Button("Clear All")
-  val buttonClearItem = new Button("Clear Item")
-  val buttonChange = new Button("SHOW MUST GO ON")
-  val buttonSaveChanges = new Button("Save changes")
+  private val buttonDelete = new Button("Delete All")
+  private val buttonNewContact = new Button("Add new contact")
+  private val buttonClearBD = new Button("Clear BD")
+  private val buttonClearAll = new Button("Clear All")
+  private val buttonClearItem = new Button("Clear Item")
+  private val buttonChange = new Button("SHOW MUST GO ON")
+  private val buttonSaveChanges = new Button("Save changes")
 
-  val textFieldName = new TextField("Name")
-  val textFieldNumber = new TextField("Number")
+  private val textFieldName = new TextField("Name")
+  private val textFieldNumber = new TextField("Number")
 
-  val menuItemClose = new MenuItem("Close")
-  val menuItemShowContacts = new MenuItem("Show contacts")
+  private val menuItemClose = new MenuItem("Close")
+  private val menuItemShowContacts = new MenuItem("Show contacts")
 
-  val menuButtonEdit = new MenuButton("Edit", null, menuItemClose, menuItemShowContacts)
+  private val menuButtonEdit = new MenuButton("Edit", null, menuItemClose, menuItemShowContacts)
 
-  val clearWindow = new ClearWindow()
-  val warningWindow = new WarningWindow()
+  private val clearWindow = new ClearWindow()
+  private val warningWindow = new WarningWindow()
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
@@ -49,6 +49,7 @@ class MainWindow extends Application {
       }
     })
 
+    //лямбды
     buttonNewContact.setOnAction(new EventHandler[ActionEvent] {
       override def handle(e: ActionEvent) {
 
@@ -58,7 +59,7 @@ class MainWindow extends Application {
           warningWindow.warningButtonOK()
         }
         else {
-          val str: String = s"${textFieldName.getText}|${textFieldNumber.getText}\n"
+          val str: String = s"${textFieldName.getText}|${textFieldNumber.getText+Constants.LINE_BREAK}"
           Utils.writeStrToCSV(str)
         }
       }
@@ -104,7 +105,7 @@ class MainWindow extends Application {
             Utils.clearDB()
             for (i <- allItemsFromBD.indices) {
               if (allItemsFromBD(i).nonEmpty) {
-                Utils.writeStrToCSV(s"${allItemsFromBD(i)}\n") //TODO еще раз пересмотреть
+                Utils.writeStrToCSV(s"${allItemsFromBD(i)+Constants.LINE_BREAK}") //TODO еще раз пересмотреть
               }
             }
           }
@@ -129,7 +130,7 @@ class MainWindow extends Application {
                 allItemsFromBD.update(indexSelectItem, s"$newName|$newNumber")
                 Utils.clearDB()
                 for (i <- allItemsFromBD.indices) {
-                  Utils.writeStrToCSV(s"${allItemsFromBD(i)};")
+                  Utils.writeStrToCSV(allItemsFromBD(i)+Constants.LINE_BREAK)
                 }
                 changeStage.close()
               }

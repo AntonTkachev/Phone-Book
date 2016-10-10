@@ -2,11 +2,10 @@ package view
 
 import javafx.application.Application
 import javafx.event.ActionEvent
-import javafx.geometry.Orientation
 import javafx.scene.Scene
 import javafx.scene.control._
 import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
-import javafx.scene.layout.{FlowPane, HBox, VBox}
+import javafx.scene.layout._
 import javafx.stage.Stage
 
 import LambdaHelper._
@@ -18,7 +17,7 @@ object MainWindow {
 }
 
 class MainWindow extends Application {
-  private val pane = new FlowPane()
+  private val pane = new AnchorPane()
 
   private val stageWithContacts = new Stage()
 
@@ -33,13 +32,21 @@ class MainWindow extends Application {
   private val textFieldName = new TextField("Name")
   private val textFieldNumber = new TextField("Number")
 
-  private val menuItemClose = new MenuItem("Close")
-  private val menuItemShowContacts = new MenuItem("Show contacts")
+  val borderPane = new BorderPane()
+  val menuBar = new MenuBar()
 
-  private val menuButtonEdit = new MenuButton("Edit", null, menuItemClose, menuItemShowContacts)
+  val fileMenu = new Menu("File")
+  val editMenu = new Menu("Edit")
+  val helpMenu = new Menu("Help")
+
+  val exitMenuItem = new MenuItem("Exit")
+  val showContactsMenuItem = new MenuItem("Show contacts")
 
   private val clearWindow = new ClearWindow()
   private val warningWindow = new WarningWindow()
+
+  val hbox = new HBox(5)
+  val vb = new VBox()
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
@@ -64,13 +71,13 @@ class MainWindow extends Application {
 
     clearWindow.openClearWindowWithButton(buttonClearBD)
 
-    menuItemClose.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
-    menuItemClose.setOnAction((e: ActionEvent) =>
+    exitMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
+    exitMenuItem.setOnAction((e: ActionEvent) =>
         primaryStage.close()
     )
 
-    menuItemShowContacts.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
-    menuItemShowContacts.setOnAction((e: ActionEvent) => {
+    showContactsMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
+    showContactsMenuItem.setOnAction((e: ActionEvent) => {
 
         val listView: ListView[String] = new ListView()
 
@@ -132,16 +139,25 @@ class MainWindow extends Application {
         stageWithContacts.show()
     })
 
-    buttonNewContact.setMaxWidth(Double.MaxValue)
-    buttonDelete.setMaxWidth(Double.MaxValue)
-    buttonClearBD.setMaxWidth(Double.MaxValue)
-    pane.setOrientation(Orientation.VERTICAL)
-    pane.getChildren.add(textFieldName)
-    pane.getChildren.add(textFieldNumber)
-    pane.getChildren.add(buttonDelete)
-    pane.getChildren.add(buttonNewContact)
-    pane.getChildren.add(buttonClearBD)
-    pane.getChildren.add(0, new HBox(menuButtonEdit))
+
+
+    menuBar.prefWidthProperty().bind(primaryStage.widthProperty())
+    borderPane.setTop(menuBar)
+
+    fileMenu.getItems.addAll(exitMenuItem,showContactsMenuItem)
+
+    menuBar.getMenus.addAll(fileMenu,editMenu,helpMenu)
+
+    vb.getChildren.addAll(textFieldName,textFieldNumber)
+
+    hbox.getChildren.addAll(buttonDelete, buttonNewContact, buttonClearBD)
+    pane.getChildren.add(vb)
+    pane.getChildren.add(hbox)
+    pane.getChildren.add(borderPane)
+    AnchorPane.setTopAnchor(vb, 30d)
+    AnchorPane.setRightAnchor(hbox, 10d)
+    AnchorPane.setBottomAnchor(hbox, 10d)
+
     primaryStage.setScene(new Scene(pane, 300, 250))
     primaryStage.show()
   }

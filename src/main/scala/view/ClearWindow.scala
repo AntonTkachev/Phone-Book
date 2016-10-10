@@ -40,6 +40,7 @@ class ClearWindow {
 
       buttonYes.setOnAction((e: ActionEvent) => {
         Utils.clearDB()
+        Constants.listView.getItems.clear()
         warningStage.close()
       })
 

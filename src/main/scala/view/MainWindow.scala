@@ -21,16 +21,14 @@ class MainWindow extends Application {
 
   private val stageWithContacts = new Stage()
 
-  private val buttonDelete = new Button("Delete All")
-  private val buttonNewContact = new Button("Add new contact")
-  private val buttonClearBD = new Button("Clear BD")
+  private val buttonNewContact = new Button("New...")
   private val buttonClearAll = new Button("Clear All")
   private val buttonClearItem = new Button("Clear Item")
   private val buttonChange = new Button("SHOW MUST GO ON")
   private val buttonSaveChanges = new Button("Save changes")
 
-  private val textFieldName = new TextField("Name")
-  private val textFieldNumber = new TextField("Number")
+  val textFieldName = new TextField("Name")
+  val textFieldNumber = new TextField("Number")
 
   val borderPane = new BorderPane()
   val menuBar = new MenuBar()
@@ -40,125 +38,131 @@ class MainWindow extends Application {
   val helpMenu = new Menu("Help")
 
   val exitMenuItem = new MenuItem("Exit")
+  val newMenuItem = new MenuItem("New...")
   val showContactsMenuItem = new MenuItem("Show contacts")
 
-  private val clearWindow = new ClearWindow()
-  private val warningWindow = new WarningWindow()
+  val clearWindow = new ClearWindow()
+  val warningWindow = new WarningWindow()
 
   val hbox = new HBox(5)
   val vb = new VBox()
 
+  val listView = Constants.listView
+
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
 
-    buttonDelete.setOnAction((e: ActionEvent) => {
-        textFieldName.setText("")
-        textFieldNumber.setText("")
-    })
+    val allItemsFromBD = Utils.scanning() //TODO сделать методом и распределить по проекту
+    for (num <- allItemsFromBD.indices) {
+      val allContactInfo = allItemsFromBD(num)
+      listView.getItems.add(allContactInfo.split('|').head)
+    }
 
-    buttonNewContact.setOnAction((e: ActionEvent) => {
+    newMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN))
+    newMenuItem.setOnAction((e: ActionEvent) => {
 
+
+      val vb = new VBox()
+      vb.getChildren.addAll(textFieldName, textFieldNumber, buttonNewContact)
+
+      buttonNewContact.setOnAction((e: ActionEvent) => {
         val name = textFieldName.getText
         val number = textFieldNumber.getText
         if (name.isEmpty || number.isEmpty) {
           warningWindow.warningButtonOK()
         }
         else {
-          val str: String = s"${textFieldName.getText}|${textFieldNumber.getText+Constants.LINE_BREAK}"
+          val str: String = s"${textFieldName.getText}|${textFieldNumber.getText + Constants.LINE_BREAK}"
           Utils.writeStrToCSV(str)
+
+          listView.getItems.clear()
+          val allItemsFromBD = Utils.scanning()
+          for (num <- allItemsFromBD.indices) {
+            val allContactInfo = allItemsFromBD(num)
+            listView.getItems.add(allContactInfo.split('|').head)
+          }
         }
+      })
+      val sc = new Scene(vb, 300, 250)
+      stageWithContacts.setScene(sc)
+      stageWithContacts.show()
     })
 
-    clearWindow.openClearWindowWithButton(buttonClearBD)
+    clearWindow.openClearWindowWithButton(buttonClearAll)
 
-    exitMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
-    exitMenuItem.setOnAction((e: ActionEvent) =>
-        primaryStage.close()
-    )
+    buttonClearItem.setOnAction((e: ActionEvent) => {   //todo ЛАГАЕТ КОГДА БД ПУСТА
+      val indexSelectItem = listView.getSelectionModel.getSelectedIndex
+      listView.getItems.remove(indexSelectItem)
+      val allItemsFromBD = Utils.scanning()
+      allItemsFromBD.update(indexSelectItem, "")
+      Utils.clearDB()
+      for (i <- allItemsFromBD.indices) {
+        if (allItemsFromBD(i).nonEmpty) {
+          Utils.writeStrToCSV(s"${allItemsFromBD(i) + Constants.LINE_BREAK}") //TODO еще раз пересмотреть
+        }
+      }
+    })
 
-    showContactsMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN))
-    showContactsMenuItem.setOnAction((e: ActionEvent) => {
+    buttonChange.setOnAction((e: ActionEvent) => {
+      val indexSelectItem = listView.getSelectionModel.getSelectedIndex
+      val allItemsFromBD = Utils.scanning()
+      val selectItemInBD = allItemsFromBD(indexSelectItem)
+      val changeStage = new Stage()
+      val hb = new HBox()
+      val textFieldName = new TextField(selectItemInBD.split('|').head)
+      val textFieldNumber = new TextField(selectItemInBD.split('|')(1))
+      hb.getChildren.addAll(textFieldName, textFieldNumber, buttonSaveChanges)
 
-        val listView: ListView[String] = new ListView()
-
+      buttonSaveChanges.setOnAction((e: ActionEvent) => {
+        val newName = textFieldName.getText
+        val newNumber = textFieldNumber.getText
         val allItemsFromBD = Utils.scanning()
+        allItemsFromBD.update(indexSelectItem, s"$newName|$newNumber")
+        Utils.clearDB()
+        for (i <- allItemsFromBD.indices) {
+          Utils.writeStrToCSV(allItemsFromBD(i) + Constants.LINE_BREAK)
+        }
+        listView.getItems.clear()
         for (num <- allItemsFromBD.indices) {
           val allContactInfo = allItemsFromBD(num)
           listView.getItems.add(allContactInfo.split('|').head)
         }
+        changeStage.close()
+      })
 
-        val vBox = new VBox()
-        vBox.getChildren.addAll(listView, buttonClearAll, buttonClearItem, buttonChange)
 
-        buttonClearAll.setOnAction((e: ActionEvent) => {
-            listView.getItems.clear()
-            Utils.clearDB()
-        })
-
-        buttonClearItem.setOnAction((e: ActionEvent) => {
-            val indexSelectItem = listView.getSelectionModel.getSelectedIndex
-            listView.getItems.remove(indexSelectItem)
-            val allItemsFromBD = Utils.scanning()
-            allItemsFromBD.update(indexSelectItem, "")
-            Utils.clearDB()
-            for (i <- allItemsFromBD.indices) {
-              if (allItemsFromBD(i).nonEmpty) {
-                Utils.writeStrToCSV(s"${allItemsFromBD(i)+Constants.LINE_BREAK}") //TODO еще раз пересмотреть
-              }
-          }
-        })
-
-        buttonChange.setOnAction((e: ActionEvent) => {
-            val indexSelectItem = listView.getSelectionModel.getSelectedIndex
-            val allItemsFromBD = Utils.scanning()
-            val selectItemInBD = allItemsFromBD(indexSelectItem)
-            val changeStage = new Stage()
-            val hb = new HBox()
-            val textFieldName = new TextField(selectItemInBD.split('|').head)
-            val textFieldNumber = new TextField(selectItemInBD.split('|')(1))
-            hb.getChildren.addAll(textFieldName, textFieldNumber, buttonSaveChanges)
-
-            buttonSaveChanges.setOnAction((e: ActionEvent) => {
-                val newName = textFieldName.getText
-                val newNumber = textFieldNumber.getText
-                val allItemsFromBD = Utils.scanning()
-                allItemsFromBD.update(indexSelectItem, s"$newName|$newNumber")
-                Utils.clearDB()
-                for (i <- allItemsFromBD.indices) {
-                  Utils.writeStrToCSV(allItemsFromBD(i)+Constants.LINE_BREAK)
-                }
-                changeStage.close()
-            })
-            changeStage.setTitle("Изменить")
-            changeStage.setScene(new Scene(hb, 300, 100))
-            changeStage.show()
-        })
-
-        stageWithContacts.setTitle("Все контакты")
-        stageWithContacts.setScene(new Scene(vBox, 300, 250))
-        stageWithContacts.show()
+      changeStage.setTitle("Изменить")
+      changeStage.setScene(new Scene(hb, 300, 100))
+      changeStage.show()
     })
 
+    exitMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
+    exitMenuItem.setOnAction((e: ActionEvent) =>
+      primaryStage.close()
+    )
 
+    val rootPane = new AnchorPane()
 
     menuBar.prefWidthProperty().bind(primaryStage.widthProperty())
-    borderPane.setTop(menuBar)
+    fileMenu.getItems.addAll(exitMenuItem)
+    editMenu.getItems.addAll(newMenuItem)
+    menuBar.getMenus.addAll(fileMenu, editMenu, helpMenu)
 
-    fileMenu.getItems.addAll(exitMenuItem,showContactsMenuItem)
+    vb.getChildren.addAll(listView)
 
-    menuBar.getMenus.addAll(fileMenu,editMenu,helpMenu)
-
-    vb.getChildren.addAll(textFieldName,textFieldNumber)
-
-    hbox.getChildren.addAll(buttonDelete, buttonNewContact, buttonClearBD)
-    pane.getChildren.add(vb)
-    pane.getChildren.add(hbox)
-    pane.getChildren.add(borderPane)
-    AnchorPane.setTopAnchor(vb, 30d)
+    hbox.getChildren.addAll(buttonClearAll, buttonClearItem, buttonChange)
+    AnchorPane.setTopAnchor(menuBar, 0d)     // TODO разобарться с переменными
     AnchorPane.setRightAnchor(hbox, 10d)
     AnchorPane.setBottomAnchor(hbox, 10d)
+    AnchorPane.setLeftAnchor(listView, 0d)
+    AnchorPane.setTopAnchor(listView, 25d)
+    AnchorPane.setBottomAnchor(listView, 0d)
+    AnchorPane.setRightAnchor(vb, 25d)
+    AnchorPane.setTopAnchor(vb, 25d)
 
-    primaryStage.setScene(new Scene(pane, 300, 250))
+    rootPane.getChildren.addAll(menuBar, listView, hbox, vb)
+
+    primaryStage.setScene(new Scene(rootPane, Constants.WIDTH_MAIN_SCENE, Constants.HEIGHT_MAIN_SCENE))
     primaryStage.show()
   }
 

@@ -17,14 +17,14 @@ object MainWindow {
 }
 
 class MainWindow extends Application {
-  private val pane = new AnchorPane()
+  private val rootPane = new AnchorPane()
 
   private val stageWithContacts = new Stage()
 
   private val buttonNewContact = new Button("New...")
-  private val buttonClearAll = new Button("Clear All")
-  private val buttonClearItem = new Button("Clear Item")
-  private val buttonChange = new Button("SHOW MUST GO ON")
+  private val buttonDeleteAll = new Button("Delete All")
+  private val buttonDeleteItem = new Button("Delete Item")
+  private val buttonEdit = new Button("Edit...")
   private val buttonSaveChanges = new Button("Save changes")
 
   val textFieldName = new TextField("Name")
@@ -52,11 +52,7 @@ class MainWindow extends Application {
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
 
-    val allItemsFromBD = Utils.scanning() //TODO сделать методом и распределить по проекту
-    for (num <- allItemsFromBD.indices) {
-      val allContactInfo = allItemsFromBD(num)
-      listView.getItems.add(allContactInfo.split('|').head)
-    }
+    Utils.updateList(listView)
 
     newMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN))
     newMenuItem.setOnAction((e: ActionEvent) => {
@@ -75,12 +71,7 @@ class MainWindow extends Application {
           val str: String = s"${textFieldName.getText}|${textFieldNumber.getText + Constants.LINE_BREAK}"
           Utils.writeStrToCSV(str)
 
-          listView.getItems.clear()
-          val allItemsFromBD = Utils.scanning()
-          for (num <- allItemsFromBD.indices) {
-            val allContactInfo = allItemsFromBD(num)
-            listView.getItems.add(allContactInfo.split('|').head)
-          }
+          Utils.updateList(listView)
         }
       })
       val sc = new Scene(vb, 300, 250)
@@ -88,9 +79,10 @@ class MainWindow extends Application {
       stageWithContacts.show()
     })
 
-    clearWindow.openClearWindowWithButton(buttonClearAll)
+    clearWindow.openClearWindowWithButton(buttonDeleteAll)
 
-    buttonClearItem.setOnAction((e: ActionEvent) => {   //todo ЛАГАЕТ КОГДА БД ПУСТА
+    buttonDeleteItem.setOnAction((e: ActionEvent) => {
+      //todo ЛАГАЕТ КОГДА БД ПУСТА
       val indexSelectItem = listView.getSelectionModel.getSelectedIndex
       listView.getItems.remove(indexSelectItem)
       val allItemsFromBD = Utils.scanning()
@@ -103,7 +95,7 @@ class MainWindow extends Application {
       }
     })
 
-    buttonChange.setOnAction((e: ActionEvent) => {
+    buttonEdit.setOnAction((e: ActionEvent) => {
       val indexSelectItem = listView.getSelectionModel.getSelectedIndex
       val allItemsFromBD = Utils.scanning()
       val selectItemInBD = allItemsFromBD(indexSelectItem)
@@ -122,11 +114,7 @@ class MainWindow extends Application {
         for (i <- allItemsFromBD.indices) {
           Utils.writeStrToCSV(allItemsFromBD(i) + Constants.LINE_BREAK)
         }
-        listView.getItems.clear()
-        for (num <- allItemsFromBD.indices) {
-          val allContactInfo = allItemsFromBD(num)
-          listView.getItems.add(allContactInfo.split('|').head)
-        }
+        Utils.updateList(listView)
         changeStage.close()
       })
 
@@ -141,8 +129,6 @@ class MainWindow extends Application {
       primaryStage.close()
     )
 
-    val rootPane = new AnchorPane()
-
     menuBar.prefWidthProperty().bind(primaryStage.widthProperty())
     fileMenu.getItems.addAll(exitMenuItem)
     editMenu.getItems.addAll(newMenuItem)
@@ -150,8 +136,8 @@ class MainWindow extends Application {
 
     vb.getChildren.addAll(listView)
 
-    hbox.getChildren.addAll(buttonClearAll, buttonClearItem, buttonChange)
-    AnchorPane.setTopAnchor(menuBar, 0d)     // TODO разобарться с переменными
+    hbox.getChildren.addAll(buttonDeleteAll, buttonDeleteItem, buttonEdit) //TODO обернуть в пейн?
+    AnchorPane.setTopAnchor(menuBar, 0d) // TODO разобарться с переменными
     AnchorPane.setRightAnchor(hbox, 10d)
     AnchorPane.setBottomAnchor(hbox, 10d)
     AnchorPane.setLeftAnchor(listView, 0d)

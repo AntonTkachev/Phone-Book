@@ -2,6 +2,7 @@ package view
 
 import java.io.{File, FileWriter}
 import java.util.Scanner
+import javafx.scene.control.ListView
 
 
 object Utils {
@@ -26,5 +27,14 @@ object Utils {
   def clearDB() = {
     val file = new FileWriter(new File(Constants.FileConstants.FILE_NAME), false)
     file.close()
+  }
+
+  def updateList(list: ListView[String]) = {
+    list.getItems.clear()
+    val allItemsFromBD = Utils.scanning()
+    for (num <- allItemsFromBD.indices) {
+      val allContactInfo = allItemsFromBD(num)
+      list.getItems.add(allContactInfo.split('|').head)
+    }
   }
 }

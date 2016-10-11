@@ -19,17 +19,9 @@ object MainWindow {
 class MainWindow extends Application {
   private val rootPane = new AnchorPane()
 
-  private val stageWithContacts = new Stage()
-  private val changeStage = new Stage()
-
-  private val buttonNewContact = new Button("New...")
   private val buttonDeleteAll = new Button("Delete All")
   private val buttonDeleteItem = new Button("Delete Item")
   private val buttonEdit = new Button("Edit...")
-  private val buttonSaveChanges = new Button("Save changes")
-
-  private val textFieldName = new TextField("Name")
-  private val textFieldNumber = new TextField("Number")
 
   private val menuBar = new MenuBar()
 
@@ -40,42 +32,22 @@ class MainWindow extends Application {
   private val exitMenuItem = new MenuItem("Exit")
   private val newMenuItem = new MenuItem("New")
 
-  private val clearWindow = new ClearWindow()
-  private val warningWindow = new WarningWindow()
+  private val clearWindow = new ClearAllContactWindow()
 
   private val mainButtonPanel = new HBox(5)
 
   val listView = Constants.listView
+  val editWindow = new EditContactWindow
+  val newContactWindow = new NewContactWindow
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
 
     Utils.updateList(listView)
 
-    newMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN))
-    newMenuItem.setOnAction((e: ActionEvent) => {
-      val newContactPanel = new VBox()
-      newContactPanel.getChildren.addAll(textFieldName, textFieldNumber, buttonNewContact)
+    newContactWindow.newContact(newMenuItem)
 
-      buttonNewContact.setOnAction((e: ActionEvent) => {
-        val textFromFieldName = textFieldName.getText
-        val textFromFieldNumber = textFieldNumber.getText
-        if (textFromFieldName.isEmpty || textFromFieldNumber.isEmpty) {
-          warningWindow.warningButtonOK()
-        }
-        else {
-          val str: String = s"$textFromFieldName|${textFromFieldNumber + Constants.LINE_BREAK}"
-          Utils.writeStrToCSV(str)
-          val listView = Constants.listView
-          Utils.updateList(listView)
-        }
-      })
-      val sc = new Scene(newContactPanel, 300, 250)
-      stageWithContacts.setScene(sc)
-      stageWithContacts.show()
-    })
-
-    clearWindow.openClearWindowWithButton(buttonDeleteAll)
+    clearWindow.clearAllContact(buttonDeleteAll)
 
     buttonDeleteItem.setOnAction((e: ActionEvent) => {
       val item = listView.getSelectionModel.getSelectedItem
@@ -93,33 +65,7 @@ class MainWindow extends Application {
       }
     })
 
-    buttonEdit.setOnAction((e: ActionEvent) => {
-      val editContactPanel = new HBox()
-      val indexSelectItem = listView.getSelectionModel.getSelectedIndex
-      val allItemsFromBD = Utils.scanning()
-      val selectItemInBD = allItemsFromBD(indexSelectItem)
-
-      val textFieldName = new TextField(selectItemInBD.split('|').head)
-      val textFieldNumber = new TextField(selectItemInBD.split('|')(1))
-      editContactPanel.getChildren.addAll(textFieldName, textFieldNumber, buttonSaveChanges)
-      buttonSaveChanges.setOnAction((e: ActionEvent) => {
-        val textFromFieldName = textFieldName.getText
-        val textFromFieldNumber = textFieldNumber.getText
-        val allItemsFromBD = Utils.scanning()
-        allItemsFromBD.update(indexSelectItem, s"$textFromFieldName|$textFromFieldNumber")
-        Utils.clearDB()
-        for (i <- allItemsFromBD.indices) {
-          Utils.writeStrToCSV(allItemsFromBD(i) + Constants.LINE_BREAK)
-        }
-        Utils.updateList(listView)
-        changeStage.close()
-      })
-
-
-      changeStage.setTitle("Изменить")
-      changeStage.setScene(new Scene(editContactPanel, 300, 100))
-      changeStage.show()
-    })
+    editWindow.editContact(buttonEdit)
 
     exitMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
     exitMenuItem.setOnAction((e: ActionEvent) =>

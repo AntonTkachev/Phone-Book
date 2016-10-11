@@ -8,7 +8,7 @@ import javafx.stage.Stage
 
 import LambdaHelper._
 
-class ClearWindow {
+class ClearAllContactWindow {
   private val warningStage = new Stage()
 
   private val buttonNo = new Button("No")
@@ -29,11 +29,11 @@ class ClearWindow {
   pane.getChildren.add(buttonYes)
   pane.getChildren.add(buttonNo)
 
-  warningStage.setTitle("Clear BD???")
+  warningStage.setTitle("Clear all contact?")
   warningStage.setScene(new Scene(pane, layoutXForScene, layoutYForScene))
   warningStage.setResizable(false)
 
-  def openClearWindowWithButton(value: Button) = {
+  def clearAllContact(value: Button) = {
     value.setOnAction((e: ActionEvent) => {
 
       warningStage.show()

@@ -52,7 +52,8 @@ object UI {
     })
   }
 
-  private val textFieldName = new TextField("Name")
+  private val textFieldFirstName = new TextField("First Name")
+  private val textFieldLastName = new TextField("Last Name")
   private val textFieldNumber = new TextField("Number")
   private val buttonNewContact = new Button("New...")
   private val stageWithContacts = new Stage()
@@ -61,16 +62,17 @@ object UI {
     newMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN))
     newMenuItem.setOnAction((e: ActionEvent) => {
       val newContactPanel = new VBox()
-      newContactPanel.getChildren.addAll(textFieldName, textFieldNumber, buttonNewContact)
+      newContactPanel.getChildren.addAll(textFieldFirstName, textFieldLastName,textFieldNumber, buttonNewContact)
 
       buttonNewContact.setOnAction((e: ActionEvent) => {
-        val textFromFieldName = textFieldName.getText
+        val textFromFieldFirstName = textFieldFirstName.getText
+        val textFromFieldLastName = textFieldLastName.getText
         val textFromFieldNumber = textFieldNumber.getText
-        if (textFromFieldName.isEmpty || textFromFieldNumber.isEmpty) {
+        if (textFromFieldFirstName.isEmpty || textFromFieldNumber.isEmpty) {
           UI.warningButtonOK()
         }
         else {
-          val str: String = s"$textFromFieldName|${textFromFieldNumber + Constants.LINE_BREAK}"
+          val str: String = s"$textFromFieldFirstName|$textFromFieldLastName|$textFromFieldNumber|${Constants.LINE_BREAK}"
           DataBaseUtils.writeToDB(str)
           val listView = Constants.listView
           UI.updateList(listView)

@@ -8,7 +8,7 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout._
 import javafx.stage.Stage
 
-import view.SecondaryWindows.{EditContactWindow, NewContactWindow}
+import view.SecondaryWindows.EditContactWindow
 
 import view.Utils.LambdaHelper._
 import view.Utils._
@@ -39,7 +39,6 @@ class MainWindow extends Application {
 
   val listView = Constants.listView
   val editWindow = new EditContactWindow
-  val newContactWindow = new NewContactWindow
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")

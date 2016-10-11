@@ -8,7 +8,10 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout._
 import javafx.stage.Stage
 
-import LambdaHelper._
+import view.SecondaryWindows.{EditContactWindow, NewContactWindow}
+
+import view.Utils.LambdaHelper._
+import view.Utils._
 
 object MainWindow {
   def main(args: Array[String]) {
@@ -32,8 +35,6 @@ class MainWindow extends Application {
   private val exitMenuItem = new MenuItem("Exit")
   private val newMenuItem = new MenuItem("New")
 
-  private val clearWindow = new ClearAllContactWindow()
-
   private val mainButtonPanel = new HBox(5)
 
   val listView = Constants.listView
@@ -43,23 +44,23 @@ class MainWindow extends Application {
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
 
-    Utils.updateList(listView)
+    UI.updateList(listView)
 
-    newContactWindow.newContact(newMenuItem)
+    UI.newContact(newMenuItem)
 
-    clearWindow.clearAllContact(buttonDeleteAll)
+    UI.clearAllContact(buttonDeleteAll)
 
     buttonDeleteItem.setOnAction((e: ActionEvent) => {
       val item = listView.getSelectionModel.getSelectedItem
       if (item != null && item.nonEmpty) {
         val indexSelectItem = listView.getSelectionModel.getSelectedIndex
         listView.getItems.remove(indexSelectItem)
-        val allItemsFromBD = Utils.scanning()
+        val allItemsFromBD = DataBaseUtils.scanningDB()
         allItemsFromBD.update(indexSelectItem, "")
-        Utils.clearDB()
+        DataBaseUtils.clearDB()
         for (i <- allItemsFromBD.indices) {
           if (allItemsFromBD(i).nonEmpty) {
-            Utils.writeStrToCSV(s"${allItemsFromBD(i) + Constants.LINE_BREAK}") //TODO еще раз пересмотреть
+            DataBaseUtils.writeToDB(s"${allItemsFromBD(i) + Constants.LINE_BREAK}") //TODO еще раз пересмотреть
           }
         }
       }

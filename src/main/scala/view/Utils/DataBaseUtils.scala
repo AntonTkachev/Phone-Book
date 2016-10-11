@@ -1,13 +1,12 @@
-package view
+package view.Utils
 
 import java.io.{File, FileWriter}
 import java.util.Scanner
-import javafx.scene.control.ListView
 
 
-object Utils {
+object DataBaseUtils {
 
-  def scanning() = {
+  def scanningDB() = {
     val scanner = new Scanner(new File(Constants.FileConstants.FILE_NAME))
     scanner.useDelimiter(",")
     var contact: Array[String] = Array()
@@ -18,7 +17,7 @@ object Utils {
     contact
   }
 
-  def writeStrToCSV(str: String) = {
+  def writeToDB(str: String) = {
     val file = new FileWriter(new File(Constants.FileConstants.FILE_NAME), true)
     file.write(str)
     file.close()
@@ -29,12 +28,4 @@ object Utils {
     file.close()
   }
 
-  def updateList(list: ListView[String]) = {
-    list.getItems.clear()
-    val allItemsFromBD = Utils.scanning()
-    for (num <- allItemsFromBD.indices) {
-      val allContactInfo = allItemsFromBD(num)
-      list.getItems.add(allContactInfo.split('|').head)
-    }
-  }
 }

@@ -1,4 +1,4 @@
-package view
+package view.SecondaryWindows
 
 import javafx.event.ActionEvent
 import javafx.scene.Scene
@@ -7,14 +7,13 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 
-import LambdaHelper._
+import view.Utils._
 
 class NewContactWindow {
 
   private val textFieldName = new TextField("Name")
   private val textFieldNumber = new TextField("Number")
   private val buttonNewContact = new Button("New...")
-  private val warningWindow = new WarningWindow()
   private val stageWithContacts = new Stage()
 
   def newContact(newMenuItem: MenuItem) = {
@@ -27,13 +26,13 @@ class NewContactWindow {
         val textFromFieldName = textFieldName.getText
         val textFromFieldNumber = textFieldNumber.getText
         if (textFromFieldName.isEmpty || textFromFieldNumber.isEmpty) {
-          warningWindow.warningButtonOK()
+          UI.warningButtonOK()
         }
         else {
           val str: String = s"$textFromFieldName|${textFromFieldNumber + Constants.LINE_BREAK}"
-          Utils.writeStrToCSV(str)
+          DataBaseUtils.writeToDB(str)
           val listView = Constants.listView
-          Utils.updateList(listView)
+          UI.updateList(listView)
         }
       })
       val sc = new Scene(newContactPanel, 300, 250)

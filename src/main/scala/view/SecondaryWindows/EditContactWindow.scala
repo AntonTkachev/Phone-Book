@@ -1,4 +1,4 @@
-package view
+package view.SecondaryWindows
 
 import javafx.event.ActionEvent
 import javafx.scene.Scene
@@ -6,7 +6,7 @@ import javafx.scene.control.{Button, TextField}
 import javafx.scene.layout.HBox
 import javafx.stage.Stage
 
-import LambdaHelper._
+import view.Utils._
 
 class EditContactWindow {
   private val changeStage = new Stage()
@@ -16,10 +16,10 @@ class EditContactWindow {
   private val listView = Constants.listView
 
   def editContact(buttonEdit : Button) = {
-    buttonEdit.setOnAction((e: ActionEvent) => {
+    buttonEdit.setOnAction((e: ActionEvent) => { //TODO NPE отловить!!
       val editContactPanel = new HBox()
       val indexSelectItem = listView.getSelectionModel.getSelectedIndex
-      val allItemsFromBD = Utils.scanning()
+      val allItemsFromBD = DataBaseUtils.scanningDB()
       val selectItemInBD = allItemsFromBD(indexSelectItem)
 
       val textFieldName = new TextField(selectItemInBD.split('|').head)
@@ -28,13 +28,13 @@ class EditContactWindow {
       buttonSaveChanges.setOnAction((e: ActionEvent) => {
         val textFromFieldName = textFieldName.getText
         val textFromFieldNumber = textFieldNumber.getText
-        val allItemsFromBD = Utils.scanning()
+        val allItemsFromBD = DataBaseUtils.scanningDB()
         allItemsFromBD.update(indexSelectItem, s"$textFromFieldName|$textFromFieldNumber")
-        Utils.clearDB()
+        DataBaseUtils.clearDB()
         for (i <- allItemsFromBD.indices) {
-          Utils.writeStrToCSV(allItemsFromBD(i) + Constants.LINE_BREAK)
+          DataBaseUtils.writeToDB(allItemsFromBD(i) + Constants.LINE_BREAK)
         }
-        Utils.updateList(listView)
+        UI.updateList(listView)
         changeStage.close()
       })
 

@@ -6,7 +6,7 @@ import javafx.stage.Stage
 
 import view.utils.{Constants, DataBaseUtils}
 
-trait PersonHelper {
+trait ContactHelper {
   val changeStage = new Stage()
   val rootPane = new AnchorPane()
 

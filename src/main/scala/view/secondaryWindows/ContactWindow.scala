@@ -5,10 +5,10 @@ import javafx.scene.Scene
 import javafx.scene.control.TextField
 
 import view.helpers.LambdaHelper._
-import view.helpers.PersonHelper
+import view.helpers.ContactHelper
 import view.utils.{Constants, DataBaseUtils}
 
-class ContactWindow extends PersonHelper {
+class ContactWindow extends ContactHelper {
 
   def create = {
     textFieldFirstName.setText(names.head)

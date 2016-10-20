@@ -3,25 +3,12 @@ package view.secondaryWindows
 import javafx.event.ActionEvent
 import javafx.scene.Scene
 import javafx.scene.control._
-import javafx.scene.layout.Pane
-import javafx.stage.Stage
 
+import view.helpers.LambdaHelper._
+import view.helpers.UIHelper
 import view.utils.{Constants, DataBaseUtils}
 
-object UI {
-
-  private val warningStage = new Stage()
-
-  private val buttonNo = new Button("No")
-  private val buttonYes = new Button("Yes")
-
-  private val layoutXForButton = 115
-  private val layoutYForButton = 70
-
-  private val layoutXForScene = 220
-  private val layoutYForScene = 60
-
-  private val pane = new Pane()
+object UI extends UIHelper{
 
   def item = Constants.item
 
@@ -33,10 +20,6 @@ object UI {
 
   pane.getChildren.add(buttonYes)
   pane.getChildren.add(buttonNo)
-
-  warningStage.setTitle("Clear all contact?")
-  warningStage.setScene(new Scene(pane, layoutXForScene, layoutYForScene))
-  warningStage.setResizable(false)
 
   def clearAllContact(value: Button) = {
     value.setOnAction((e: ActionEvent) => {
@@ -75,10 +58,6 @@ object UI {
     })
   }
 
-  private val warningStageWithOK = new Stage()
-
-  private val buttonOk = new Button()
-
   warningStageWithOK.setScene(new Scene(buttonOk, layoutXForScene, 100))
   warningStageWithOK.setResizable(false)
 
@@ -99,4 +78,8 @@ object UI {
       list.getItems.add(allContactInfo.split('|').head)
     }
   }
+
+  warningStage.setTitle("Clear all contact?")
+  warningStage.setScene(new Scene(pane, layoutXForScene, layoutYForScene))
+  warningStage.setResizable(false)
 }

@@ -3,13 +3,14 @@ package view
 import javafx.application.Application
 import javafx.event.ActionEvent
 import javafx.scene.Scene
-import javafx.scene.control._
 import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout._
 import javafx.stage.Stage
 
 import view.secondaryWindows.{ContactWindow, UI}
+
 import view.helpers.LambdaHelper._
+import view.helpers.MainWindowHelper
 import view.utils._
 
 object MainWindow {
@@ -18,25 +19,10 @@ object MainWindow {
   }
 }
 
-class MainWindow extends Application {
-  private val rootPane = new AnchorPane()
-
-  private val buttonDeleteAll = new Button("Delete All")
-  private val buttonDeleteItem = new Button("Delete Item")
-  private val buttonEdit = new Button("Edit...")
-
-  private val menuBar = new MenuBar()
-
-  private val fileMenu = new Menu("File")
-  private val editMenu = new Menu("Edit")
-  private val helpMenu = new Menu("Help")
-
-  private val exitMenuItem = new MenuItem("Exit")
-  private val newMenuItem = new MenuItem("New")
-
-  private val mainButtonPanel = new HBox(5)
+class MainWindow extends Application with MainWindowHelper {
 
   val listView = Constants.listView
+
   def item = Constants.item
 
   override def start(primaryStage: Stage) {

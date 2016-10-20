@@ -3,8 +3,7 @@ package view.utils
 import javafx.event.ActionEvent
 import javafx.scene.Scene
 import javafx.scene.control._
-import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
-import javafx.scene.layout.{AnchorPane, HBox, Pane, VBox}
+import javafx.scene.layout.Pane
 import javafx.stage.Stage
 
 import view.utils.LambdaHelper._
@@ -23,6 +22,10 @@ object UI {
   private val layoutYForScene = 60
 
   private val pane = new Pane()
+
+  def item = Constants.item
+
+  val listView = Constants.listView
 
   buttonNo.setLayoutX(layoutXForButton)
   buttonNo.setMinSize(layoutXForButton, layoutYForButton)
@@ -52,73 +55,35 @@ object UI {
     })
   }
 
-  val names = List("First Name", "Last Name", "Number", "Address")
+  def clearContact(value: Button)= {
+    value.setOnAction((e: ActionEvent) => {
 
-  private val textFieldFirstName = new TextField(names.head)
-  private val textFieldLastName = new TextField(names(1))
-  private val textFieldNumber = new TextField(names(2))
-  private val textFieldAddress = new TextField(names(3))
-  private val buttonNewContact = new Button("New...")
-  private val buttonCancel = new Button("Cancel")
-  private val stageWithContacts = new Stage()
-
-  def newContact(newMenuItem: MenuItem) = {
-    newMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN))
-    newMenuItem.setOnAction((e: ActionEvent) => {
-      val rootPane = new AnchorPane()
-      val rightTextFieldPanel = new VBox(5)
-
-      val leftLabelPanel = new VBox(15)
-
-      val bottomButtonPanel = new HBox(5)
-
-      rightTextFieldPanel.getChildren.addAll(textFieldFirstName, textFieldLastName, textFieldNumber, textFieldAddress)
-
-      names.foreach(name =>
-        leftLabelPanel.getChildren.add(new Label(name))
-      )
-
-      bottomButtonPanel.getChildren.addAll(buttonNewContact, buttonCancel)
-
-      rootPane.getChildren.addAll(leftLabelPanel, rightTextFieldPanel, bottomButtonPanel)
-
-      buttonNewContact.setOnAction((e: ActionEvent) => {
-        val textFromFieldFirstName = textFieldFirstName.getText
-        val textFromFieldLastName = textFieldLastName.getText
-        val textFromFieldNumber = textFieldNumber.getText
-        val textFromFieldAddress = textFieldAddress.getText
-        if (textFromFieldFirstName.isEmpty || textFromFieldNumber.isEmpty) {
-          UI.warningButtonOK()
+      if (item != null && item.nonEmpty) {
+        val indexSelectItem = listView.getSelectionModel.getSelectedIndex
+        listView.getItems.remove(indexSelectItem)
+        val allItemsFromBD = DataBaseUtils.scanningDB()
+        allItemsFromBD.update(indexSelectItem, "")
+        DataBaseUtils.clearDB()
+        for (i <- allItemsFromBD.indices) {
+          if (allItemsFromBD(i).nonEmpty) {
+            DataBaseUtils.writeToDB(s"${allItemsFromBD(i) + Constants.LINE_BREAK}") //TODO еще раз пересмотреть
+          }
         }
-        else {
-          val str: String = s"$textFromFieldFirstName|$textFromFieldLastName|$textFromFieldNumber|$textFromFieldAddress|${Constants.LINE_BREAK}"
-          DataBaseUtils.writeToDB(str)
-          val listView = Constants.listView
-          UI.updateList(listView)
-        }
-      })
-      AnchorPane.setTopAnchor(leftLabelPanel, 10d)
-      AnchorPane.setLeftAnchor(leftLabelPanel, 10d)
-      AnchorPane.setTopAnchor(rightTextFieldPanel, 10d)
-      AnchorPane.setRightAnchor(rightTextFieldPanel, 10d)
-      AnchorPane.setBottomAnchor(bottomButtonPanel, 10d)
-      AnchorPane.setRightAnchor(bottomButtonPanel, 10d)
-
-
-      val sc = new Scene(rootPane, 300, 250)
-      stageWithContacts.setScene(sc)
-      stageWithContacts.show()
+      }
+      else
+        UI.warningButtonOK("Не выбран контакт для удаления")
     })
   }
 
   private val warningStageWithOK = new Stage()
 
-  private val buttonOk = new Button("Заполнены не все поля")
+  private val buttonOk = new Button()
 
   warningStageWithOK.setScene(new Scene(buttonOk, layoutXForScene, 100))
   warningStageWithOK.setResizable(false)
 
-  def warningButtonOK() = {
+  def warningButtonOK(str : String) = {
+    buttonOk.setText(str)
     warningStageWithOK.show()
 
     buttonOk.setOnAction((e: ActionEvent) =>

@@ -8,7 +8,7 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout._
 import javafx.stage.Stage
 
-import view.secondaryWindows.EditContactWindow
+import view.secondaryWindows.ModelPersonWindow
 
 import view.utils.LambdaHelper._
 import view.utils._
@@ -38,41 +38,39 @@ class MainWindow extends Application {
   private val mainButtonPanel = new HBox(5)
 
   val listView = Constants.listView
-  val editWindow = new EditContactWindow
+  def item = Constants.item
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
 
     UI.updateList(listView)
 
-    UI.newContact(newMenuItem)
-
     UI.clearAllContact(buttonDeleteAll)
 
-    buttonDeleteItem.setOnAction((e: ActionEvent) => {
-      val item = listView.getSelectionModel.getSelectedItem
-      if (item != null && item.nonEmpty) {
-        val indexSelectItem = listView.getSelectionModel.getSelectedIndex
-        listView.getItems.remove(indexSelectItem)
-        val allItemsFromBD = DataBaseUtils.scanningDB()
-        allItemsFromBD.update(indexSelectItem, "")
-        DataBaseUtils.clearDB()
-        for (i <- allItemsFromBD.indices) {
-          if (allItemsFromBD(i).nonEmpty) {
-            DataBaseUtils.writeToDB(s"${allItemsFromBD(i) + Constants.LINE_BREAK}") //TODO еще раз пересмотреть
-          }
-        }
-      }
+    UI.clearContact(buttonDeleteItem)
+
+    newMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN))
+    newMenuItem.setOnAction((e: ActionEvent) => {
+      val create = new ModelPersonWindow
+      create.newPerson()
     })
 
-    editWindow.editContact(buttonEdit)
+    buttonEdit.setOnAction((e: ActionEvent) => {
+      if (item != null && item.nonEmpty) {
+        val create = new ModelPersonWindow
+        create.editPerson()
+      }
+      else {
+        UI.warningButtonOK("Не выбран контакт для изменения")
+      }
+    })
 
     exitMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
     exitMenuItem.setOnAction((e: ActionEvent) =>
       primaryStage.close()
     )
 
-    menuBar.prefWidthProperty().bind(primaryStage.widthProperty())
+    menuBar.prefWidthProperty().bind(primaryStage.widthProperty()) //TODO все что ниже можно в трейт
     fileMenu.getItems.addAll(exitMenuItem)
     editMenu.getItems.addAll(newMenuItem)
     menuBar.getMenus.addAll(fileMenu, editMenu, helpMenu)

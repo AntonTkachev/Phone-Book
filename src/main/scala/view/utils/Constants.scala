@@ -1,4 +1,4 @@
-package view.Utils
+package view.utils
 
 import javafx.scene.control.ListView
 

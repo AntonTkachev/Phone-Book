@@ -8,10 +8,10 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout._
 import javafx.stage.Stage
 
-import view.SecondaryWindows.EditContactWindow
+import view.secondaryWindows.EditContactWindow
 
-import view.Utils.LambdaHelper._
-import view.Utils._
+import view.utils.LambdaHelper._
+import view.utils._
 
 object MainWindow {
   def main(args: Array[String]) {

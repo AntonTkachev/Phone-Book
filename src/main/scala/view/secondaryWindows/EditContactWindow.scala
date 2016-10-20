@@ -1,4 +1,4 @@
-package view.SecondaryWindows
+package view.secondaryWindows
 
 import javafx.event.ActionEvent
 import javafx.scene.Scene
@@ -6,8 +6,8 @@ import javafx.scene.control.{Button, Label, TextField}
 import javafx.scene.layout.{AnchorPane, HBox, VBox}
 import javafx.stage.Stage
 
-import view.Utils.LambdaHelper._
-import view.Utils._
+import view.utils.LambdaHelper._
+import view.utils._
 
 class EditContactWindow {
   private val changeStage = new Stage()
@@ -31,20 +31,25 @@ class EditContactWindow {
         val selectItemInBD = allItemsFromBD(indexSelectItem)
 
         val textFieldName = new TextField(selectItemInBD.split('|').head)
-        val textFieldNumber = new TextField(selectItemInBD.split('|')(1))
-        val textFieldLastName = new TextField(selectItemInBD.split('|')(2))
+        val textFieldLastName = new TextField(selectItemInBD.split('|')(1))
+        val textFieldNumber = new TextField(selectItemInBD.split('|')(2))
+        val textFieldAddress = new TextField(selectItemInBD.split('|')(3))
 
         val bottomButtonPanel = new HBox(5)
         val leftLabelPanel = new VBox(15)
 
         val rightTextFieldPanel = new VBox(5)
 
-        rightTextFieldPanel.getChildren.addAll(textFieldName, textFieldLastName, textFieldNumber)
+        rightTextFieldPanel.getChildren.addAll(textFieldName, textFieldLastName, textFieldNumber,textFieldAddress)
         buttonCancel.setMinSize(80, 10)
         buttonSaveChanges.setMinSize(80, 10)
         bottomButtonPanel.getChildren.addAll(buttonSaveChanges, buttonCancel)
 
-        leftLabelPanel.getChildren.addAll(labelFirstName, labelLastName, labelNumber)
+        val names = List("First Name", "Last Name", "Number", "Address")
+
+        names.foreach(name =>
+          leftLabelPanel.getChildren.add(new Label(name))
+        )
 
         buttonSaveChanges.setOnAction((e: ActionEvent) => {
           val textFromFieldName = textFieldName.getText

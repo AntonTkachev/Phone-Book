@@ -1,4 +1,4 @@
-package view.Utils
+package view.utils
 
 import java.io.{File, FileWriter}
 import java.util.Scanner

@@ -6,9 +6,9 @@ import javafx.scene.control.TextField
 
 import view.helpers.LambdaHelper._
 import view.helpers.ContactHelper
-import view.utils.{Constants, DataBaseUtils}
+import view.utils.{DataBaseUtils, TestTrait}
 
-class ContactWindow extends ContactHelper {
+class ContactWindow extends ContactHelper with TestTrait{
 
   def create = {
     textFieldFirstName.setText(names.head)
@@ -27,9 +27,8 @@ class ContactWindow extends ContactHelper {
         UI.warningButtonOK("Заполнены не все поля")
       }
       else {
-        val str: String = s"$textFromFieldFirstName|$textFromFieldLastName|$textFromFieldNumber|$textFromFieldAddress|${Constants.LINE_BREAK}"
+        val str: String = s"$textFromFieldFirstName|$textFromFieldLastName|$textFromFieldNumber|$textFromFieldAddress|$LINE_BREAK"
         DataBaseUtils.writeToDB(str)
-        val listView = Constants.listView
         UI.updateList(listView)
       }
     })
@@ -53,7 +52,7 @@ class ContactWindow extends ContactHelper {
       allItemsFromBD.update(indexSelectItem, s"$textFromFieldName|$textFromFieldLastName|$textFromFieldNumber|$textFromFieldAddress|")
       DataBaseUtils.clearDB()
       for (i <- allItemsFromBD.indices) {
-        DataBaseUtils.writeToDB(allItemsFromBD(i) + Constants.LINE_BREAK)
+        DataBaseUtils.writeToDB(allItemsFromBD(i) + LINE_BREAK)
       }
       UI.updateList(listView)
       changeStage.close()

@@ -23,7 +23,7 @@ class MainWindow extends Application with MainWindowHelper {
 
   val listView = Constants.listView
 
-  def item = Constants.item
+  def item = listView.getSelectionModel.getSelectedItem
 
   override def start(primaryStage: Stage) {
     primaryStage.setTitle("Новый контакт")
@@ -70,7 +70,7 @@ class MainWindow extends Application with MainWindowHelper {
 
     rootPane.getChildren.addAll(menuBar, listView, mainButtonPanel)
 
-    primaryStage.setScene(new Scene(rootPane, Constants.WIDTH_MAIN_SCENE, Constants.HEIGHT_MAIN_SCENE))
+    primaryStage.setScene(new Scene(rootPane, WIDTH_MAIN_SCENE, HEIGHT_MAIN_SCENE))
     primaryStage.show()
   }
 

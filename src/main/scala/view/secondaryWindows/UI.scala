@@ -6,11 +6,11 @@ import javafx.scene.control._
 
 import view.helpers.LambdaHelper._
 import view.helpers.UIHelper
-import view.utils.{Constants, DataBaseUtils}
+import view.utils.{Constants, DataBaseUtils, TestTrait}
 
-object UI extends UIHelper{
+object UI extends UIHelper with TestTrait{
 
-  def item = Constants.item
+  def item = listView.getSelectionModel.getSelectedItem
 
   val listView = Constants.listView
 
@@ -49,7 +49,7 @@ object UI extends UIHelper{
         DataBaseUtils.clearDB()
         for (i <- allItemsFromBD.indices) {
           if (allItemsFromBD(i).nonEmpty) {
-            DataBaseUtils.writeToDB(s"${allItemsFromBD(i) + Constants.LINE_BREAK}") //TODO еще раз пересмотреть
+            DataBaseUtils.writeToDB(s"${allItemsFromBD(i) + LINE_BREAK}") //TODO еще раз пересмотреть
           }
         }
       }

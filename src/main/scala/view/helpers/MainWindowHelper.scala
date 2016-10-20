@@ -22,4 +22,6 @@ trait MainWindowHelper {
 
   val mainButtonPanel = new HBox(5)
 
+  val WIDTH_MAIN_SCENE = 600
+  val HEIGHT_MAIN_SCENE = 300
 }

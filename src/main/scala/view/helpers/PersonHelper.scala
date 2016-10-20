@@ -1,8 +1,10 @@
-package view.utils
+package view.helpers
 
 import javafx.scene.control.{Button, Label, TextField}
 import javafx.scene.layout.{AnchorPane, HBox, VBox}
 import javafx.stage.Stage
+
+import view.utils.{Constants, DataBaseUtils}
 
 trait PersonHelper {
   val changeStage = new Stage()

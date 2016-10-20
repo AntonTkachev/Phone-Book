@@ -1,4 +1,4 @@
-package view.utils
+package view.secondaryWindows
 
 import javafx.event.ActionEvent
 import javafx.scene.Scene
@@ -6,7 +6,7 @@ import javafx.scene.control._
 import javafx.scene.layout.Pane
 import javafx.stage.Stage
 
-import view.utils.LambdaHelper._
+import view.utils.{Constants, DataBaseUtils}
 
 object UI {
 

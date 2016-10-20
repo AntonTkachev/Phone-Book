@@ -8,9 +8,8 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout._
 import javafx.stage.Stage
 
-import view.secondaryWindows.ModelPersonWindow
-
-import view.utils.LambdaHelper._
+import view.secondaryWindows.{ContactWindow, UI}
+import view.helpers.LambdaHelper._
 import view.utils._
 
 object MainWindow {
@@ -51,14 +50,14 @@ class MainWindow extends Application {
 
     newMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN))
     newMenuItem.setOnAction((e: ActionEvent) => {
-      val create = new ModelPersonWindow
-      create.newPerson()
+      val newContact = new ContactWindow
+      newContact.create
     })
 
     buttonEdit.setOnAction((e: ActionEvent) => {
       if (item != null && item.nonEmpty) {
-        val create = new ModelPersonWindow
-        create.editPerson()
+        val selectContact = new ContactWindow
+        selectContact.edit
       }
       else {
         UI.warningButtonOK("Не выбран контакт для изменения")

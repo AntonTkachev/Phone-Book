@@ -1,4 +1,4 @@
-package view.utils
+package view.helpers
 
 import javafx.event.{ActionEvent, EventHandler}
 

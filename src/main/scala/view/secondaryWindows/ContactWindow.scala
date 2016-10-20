@@ -4,12 +4,13 @@ import javafx.event.ActionEvent
 import javafx.scene.Scene
 import javafx.scene.control.TextField
 
-import view.utils.LambdaHelper._
-import view.utils.{Constants, DataBaseUtils, PersonHelper, UI}
+import view.helpers.LambdaHelper._
+import view.helpers.PersonHelper
+import view.utils.{Constants, DataBaseUtils}
 
-class ModelPersonWindow extends PersonHelper {
+class ContactWindow extends PersonHelper {
 
-  def newPerson() = {
+  def create = {
     textFieldFirstName.setText(names.head)
     textFieldLastName.setText(names(1))
     textFieldNumber.setText(names(2))
@@ -34,7 +35,7 @@ class ModelPersonWindow extends PersonHelper {
     })
   }
 
-  def editPerson() = {
+  def edit = {
     //TODO падает если битая запись в БД
     val textFieldFirstName = new TextField(selectItemInBD.split('|').head)
     val textFieldLastName = new TextField(selectItemInBD.split('|')(1))

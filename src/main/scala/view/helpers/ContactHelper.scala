@@ -24,10 +24,28 @@ trait ContactHelper {
   lazy val textFieldNumber = new TextField()
   lazy val textFieldAddress = new TextField()
 
+  lazy val listWithTextField = List(textFieldFirstName,textFieldLastName,textFieldNumber,textFieldAddress)
+
+  lazy val arrayInfoContact = selectItemInBD.split('|')
+
+  lazy val names = Array("First Name", "Last Name", "Number", "Address")
+
+  def optional(textField: TextField) = {
+    if (textField.getText.isEmpty) {
+      " "
+    }
+    else textField.getText()
+  }
+
+  def setTextToField(textFields: List[TextField], whatSet: Array[String]) = {
+    var num = 0
+    textFields.foreach({ textFiled => textFiled.setText(whatSet(num))
+      num = num + 1
+    })
+  }
+
   buttonCancel.setMinSize(80, 10)
   buttonOK.setMinSize(80, 10)
-
-  lazy val names = List("First Name", "Last Name", "Number", "Address")
 
   lazy val bottomButtonPanel = new HBox(5)
 

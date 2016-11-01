@@ -7,7 +7,7 @@ import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 import javafx.scene.layout._
 import javafx.stage.Stage
 
-import view.secondaryWindows.{ContactWindow, UI}
+import view.secondaryWindows.{Display, UI}
 
 import view.helpers.LambdaHelper._
 import view.helpers.MainWindowHelper
@@ -34,21 +34,11 @@ class MainWindow extends Application with MainWindowHelper {
 
     UI.clearContact(buttonDeleteItem)
 
-    newMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN))
-    newMenuItem.setOnAction((e: ActionEvent) => {
-      val newContact = new ContactWindow
-      newContact.create
-    })
+    UI.newContact(newMenuItem)
 
-    buttonEdit.setOnAction((e: ActionEvent) => {
-      if (item != null && item.nonEmpty) {
-        val selectContact = new ContactWindow
-        selectContact.edit
-      }
-      else {
-        UI.warningButtonOK("Не выбран контакт для изменения")
-      }
-    })
+    UI.editContact(buttonEdit)
+
+    Display.contact(rootPane)
 
     exitMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN))
     exitMenuItem.setOnAction((e: ActionEvent) =>
@@ -71,6 +61,7 @@ class MainWindow extends Application with MainWindowHelper {
     rootPane.getChildren.addAll(menuBar, listView, mainButtonPanel)
 
     primaryStage.setScene(new Scene(rootPane, WIDTH_MAIN_SCENE, HEIGHT_MAIN_SCENE))
+    primaryStage.setResizable(false)
     primaryStage.show()
   }
 

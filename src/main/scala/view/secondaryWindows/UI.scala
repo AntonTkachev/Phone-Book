@@ -3,12 +3,13 @@ package view.secondaryWindows
 import javafx.event.ActionEvent
 import javafx.scene.Scene
 import javafx.scene.control._
+import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 
 import view.helpers.LambdaHelper._
 import view.helpers.UIHelper
 import view.utils.{Constants, DataBaseUtils, TestTrait}
 
-object UI extends UIHelper with TestTrait{
+object UI extends UIHelper with TestTrait {
 
   def item = listView.getSelectionModel.getSelectedItem
 
@@ -28,7 +29,7 @@ object UI extends UIHelper with TestTrait{
 
       buttonYes.setOnAction((e: ActionEvent) => {
         DataBaseUtils.clearDB()
-        Constants.listView.getItems.clear()
+        listView.getItems.clear()
         warningStage.close()
       })
 
@@ -38,7 +39,7 @@ object UI extends UIHelper with TestTrait{
     })
   }
 
-  def clearContact(value: Button)= {
+  def clearContact(value: Button) = {
     value.setOnAction((e: ActionEvent) => {
 
       if (item != null && item.nonEmpty) {
@@ -61,7 +62,7 @@ object UI extends UIHelper with TestTrait{
   warningStageWithOK.setScene(new Scene(buttonOk, layoutXForScene, 100))
   warningStageWithOK.setResizable(false)
 
-  def warningButtonOK(str : String) = {
+  def warningButtonOK(str: String) = {
     buttonOk.setText(str)
     warningStageWithOK.show()
 
@@ -77,6 +78,26 @@ object UI extends UIHelper with TestTrait{
       val allContactInfo = allItemsFromBD(num)
       list.getItems.add(allContactInfo.split('|').head)
     }
+  }
+
+  def newContact(newMenuItem: MenuItem) = {
+    newMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN))
+    newMenuItem.setOnAction((e: ActionEvent) => {
+      val newContact = new ContactWindow
+      newContact.create
+    })
+  }
+
+  def editContact(buttonEdit: Button) = {
+    buttonEdit.setOnAction((e: ActionEvent) => {
+      if (item != null && item.nonEmpty) {
+        val selectContact = new ContactWindow
+        selectContact.edit
+      }
+      else {
+        UI.warningButtonOK("Не выбран контакт для изменения")
+      }
+    })
   }
 
   warningStage.setTitle("Clear all contact?")

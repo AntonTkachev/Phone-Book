@@ -1,5 +1,6 @@
 package view.helpers
 
+import javafx.scene.Scene
 import javafx.scene.control.{Button, Label, TextField}
 import javafx.scene.layout.{AnchorPane, HBox, VBox}
 import javafx.stage.Stage
@@ -10,9 +11,7 @@ trait ContactHelper {
   val changeStage = new Stage()
   val rootPane = new AnchorPane()
 
-  lazy val listView = Constants.listView
-
-  lazy val indexSelectItem = listView.getSelectionModel.getSelectedIndex
+  lazy val indexSelectItem = Constants.listView.getSelectionModel.getSelectedIndex
   lazy val allItemsFromBD = DataBaseUtils.scanningDB()
   lazy val selectItemInBD = allItemsFromBD(indexSelectItem)
 
@@ -24,7 +23,7 @@ trait ContactHelper {
   lazy val textFieldNumber = new TextField()
   lazy val textFieldAddress = new TextField()
 
-  lazy val listWithTextField = List(textFieldFirstName,textFieldLastName,textFieldNumber,textFieldAddress)
+  lazy val listWithTextField = List(textFieldFirstName, textFieldLastName, textFieldNumber, textFieldAddress)
 
   lazy val arrayInfoContact = selectItemInBD.split('|')
 
@@ -66,4 +65,8 @@ trait ContactHelper {
   AnchorPane.setLeftAnchor(leftLabelPanel, 10d)
   AnchorPane.setRightAnchor(rightTextFieldPanel, 10d)
   AnchorPane.setTopAnchor(rightTextFieldPanel, 10d)
+
+  changeStage.setScene(new Scene(rootPane, 300, 300))
+  changeStage.setResizable(false)
+  changeStage.show()
 }

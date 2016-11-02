@@ -1,83 +1,34 @@
 package view.secondaryWindows
 
 import javafx.event.ActionEvent
-import javafx.scene.Scene
 import javafx.scene.control._
 import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
 
 import view.helpers.LambdaHelper._
-import view.helpers.UIHelper
-import view.utils.{Constants, DataBaseUtils, TestTrait}
+import view.utils.{Constants, WarningButton}
 
-object UI extends UIHelper with TestTrait {
+object UI {
 
   def item = listView.getSelectionModel.getSelectedItem
 
   val listView = Constants.listView
 
-  buttonNo.setLayoutX(layoutXForButton)
-  buttonNo.setMinSize(layoutXForButton, layoutYForButton)
-  buttonYes.setMinSize(layoutXForButton, layoutYForButton)
-
-  pane.getChildren.add(buttonYes)
-  pane.getChildren.add(buttonNo)
-
   def clearAllContact(value: Button) = {
     value.setOnAction((e: ActionEvent) => {
-
-      warningStage.show()
-
-      buttonYes.setOnAction((e: ActionEvent) => {
-        DataBaseUtils.clearDB()
-        listView.getItems.clear()
-        warningStage.close()
-      })
-
-      buttonNo.setOnAction((e: ActionEvent) =>
-        warningStage.close()
-      )
+      val clearContact = new ClearContact
+      clearContact.all
     })
   }
 
   def clearContact(value: Button) = {
     value.setOnAction((e: ActionEvent) => {
-
       if (item != null && item.nonEmpty) {
-        val indexSelectItem = listView.getSelectionModel.getSelectedIndex
-        listView.getItems.remove(indexSelectItem)
-        val allItemsFromBD = DataBaseUtils.scanningDB()
-        allItemsFromBD.update(indexSelectItem, "")
-        DataBaseUtils.clearDB()
-        for (i <- allItemsFromBD.indices) {
-          if (allItemsFromBD(i).nonEmpty) {
-            DataBaseUtils.writeToDB(s"${allItemsFromBD(i) + LINE_BREAK}") //TODO еще раз пересмотреть
-          }
-        }
+        val clearContact = new ClearContact
+        clearContact.one()
       }
       else
-        UI.warningButtonOK("Не выбран контакт для удаления")
+        WarningButton.ok("Не выбран контакт для удаления")
     })
-  }
-
-  warningStageWithOK.setScene(new Scene(buttonOk, layoutXForScene, 100))
-  warningStageWithOK.setResizable(false)
-
-  def warningButtonOK(str: String) = {
-    buttonOk.setText(str)
-    warningStageWithOK.show()
-
-    buttonOk.setOnAction((e: ActionEvent) =>
-      warningStageWithOK.close()
-    )
-  }
-
-  def updateList(list: ListView[String]) = {
-    list.getItems.clear()
-    val allItemsFromBD = DataBaseUtils.scanningDB()
-    for (num <- allItemsFromBD.indices) {
-      val allContactInfo = allItemsFromBD(num)
-      list.getItems.add(allContactInfo.split('|').head)
-    }
   }
 
   def newContact(newMenuItem: MenuItem) = {
@@ -95,12 +46,8 @@ object UI extends UIHelper with TestTrait {
         selectContact.edit
       }
       else {
-        UI.warningButtonOK("Не выбран контакт для изменения")
+        WarningButton.ok("Не выбран контакт для изменения")
       }
     })
   }
-
-  warningStage.setTitle("Clear all contact?")
-  warningStage.setScene(new Scene(pane, layoutXForScene, layoutYForScene))
-  warningStage.setResizable(false)
 }

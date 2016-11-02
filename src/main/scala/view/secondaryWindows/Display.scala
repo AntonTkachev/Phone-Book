@@ -7,7 +7,7 @@ import javafx.scene.layout.{AnchorPane, GridPane, VBox}
 
 import view.utils.{Constants, DataBaseUtils}
 
-object Display{
+object Display {
 
   val listView = Constants.listView
 
@@ -23,19 +23,21 @@ object Display{
         val pane = new GridPane()
         if (click.getClickCount == 1) {
           val indexSelectItem = listView.getSelectionModel.getSelectedIndex
-          val allItemsFromBD = DataBaseUtils.scanningDB()
-          val selectItemInBD: String = allItemsFromBD(indexSelectItem)
-          val firstName = selectItemInBD.split('|')
-          labelFirstName.setText(s"First Name:             ${firstName.head}") //TODO very bad!!!
-          labelLastName.setText(s"Last Name:             ${firstName(1)}")
-          labelNumber.setText(s"Number:                 ${firstName(2)}")
-          labelAddress.setText(s"Address:                 ${firstName(3)}")
-          AnchorPane.setLeftAnchor(pane, 350d)
-          AnchorPane.setTopAnchor(pane, 50d)
-          pane.getChildren.clear()
-          vbox.getChildren.addAll(labelFirstName, labelLastName, labelNumber, labelAddress)
-          pane.getChildren.add(vbox)
-          rootPane.getChildren.add(pane)
+          if (indexSelectItem >= 0) {
+            val allItemsFromBD = DataBaseUtils.scanningDB()
+            val selectItemInBD: String = allItemsFromBD(indexSelectItem)
+            val firstName = selectItemInBD.split('|')
+            labelFirstName.setText(s"First Name:             ${firstName.head}") //TODO very bad!!!
+            labelLastName.setText(s"Last Name:             ${firstName(1)}")
+            labelNumber.setText(s"Number:                 ${firstName(2)}")
+            labelAddress.setText(s"Address:                 ${firstName(3)}")
+            AnchorPane.setLeftAnchor(pane, 350d)
+            AnchorPane.setTopAnchor(pane, 50d)
+            pane.getChildren.clear()
+            vbox.getChildren.addAll(labelFirstName, labelLastName, labelNumber, labelAddress)
+            pane.getChildren.add(vbox)
+            rootPane.getChildren.add(pane)
+          }
         }
       }
     })

@@ -4,14 +4,13 @@ import javafx.application.Application
 import javafx.event.ActionEvent
 import javafx.scene.Scene
 import javafx.scene.input.{KeyCode, KeyCodeCombination, KeyCombination}
-import javafx.scene.layout._
 import javafx.stage.Stage
 
 import view.secondaryWindows.{Display, UI}
 
 import view.helpers.LambdaHelper._
 import view.helpers.MainWindowHelper
-import view.utils._
+import view.utils.{Constants, DataBaseUtils}
 
 object MainWindow {
   def main(args: Array[String]) {
@@ -21,14 +20,10 @@ object MainWindow {
 
 class MainWindow extends Application with MainWindowHelper {
 
-  val listView = Constants.listView
-
-  def item = listView.getSelectionModel.getSelectedItem
-
-  override def start(primaryStage: Stage) {
+  override def start(primaryStage: Stage) { //TODO вынести primaryStage
     primaryStage.setTitle("Новый контакт")
 
-    UI.updateList(listView)
+    DataBaseUtils.updateList(Constants.listView)
 
     UI.clearAllContact(buttonDeleteAll)
 
@@ -51,14 +46,8 @@ class MainWindow extends Application with MainWindowHelper {
     menuBar.getMenus.addAll(fileMenu, editMenu, helpMenu)
 
     mainButtonPanel.getChildren.addAll(buttonDeleteAll, buttonDeleteItem, buttonEdit) //TODO обернуть в пейн?
-    AnchorPane.setTopAnchor(menuBar, 0d) // TODO разобарться с переменными
-    AnchorPane.setRightAnchor(mainButtonPanel, 10d)
-    AnchorPane.setBottomAnchor(mainButtonPanel, 10d)
-    AnchorPane.setLeftAnchor(listView, 0d)
-    AnchorPane.setTopAnchor(listView, 25d)
-    AnchorPane.setBottomAnchor(listView, 0d)
 
-    rootPane.getChildren.addAll(menuBar, listView, mainButtonPanel)
+    rootPane.getChildren.addAll(menuBar, Constants.listView, mainButtonPanel)
 
     primaryStage.setScene(new Scene(rootPane, WIDTH_MAIN_SCENE, HEIGHT_MAIN_SCENE))
     primaryStage.setResizable(false)

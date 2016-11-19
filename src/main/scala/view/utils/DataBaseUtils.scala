@@ -2,6 +2,7 @@ package view.utils
 
 import java.io.{File, FileWriter}
 import java.util.Scanner
+import javafx.collections.FXCollections
 import javafx.scene.control.ListView
 
 
@@ -32,12 +33,11 @@ object DataBaseUtils {
     file.close()
   }
 
-  def updateList(list: ListView[String]) = {  //TODO посмотреть мб можно переделать или заменить
-    list.getItems.clear()
+  def updateList(list: ListView[String]) = {
     val allItemsFromBD = DataBaseUtils.scanningDB()
-    for (num <- allItemsFromBD.indices) {
-      val allContactInfo = allItemsFromBD(num)
-      list.getItems.add(allContactInfo.split('|').head)
-    }
+    lazy val name = FXCollections.observableArrayList("")
+    name.clear()
+    allItemsFromBD.foreach(item => name.add(item.split('|').head))
+    list.setItems(name)
   }
 }

@@ -8,7 +8,7 @@ import javafx.scene.control.ListView
 
 object DataBaseUtils {
 
-  val FILE_NAME = "test.csv"
+  val FILE_NAME = "DB.csv"
   val DB_FILE = new File(FILE_NAME)
 
   def scanningDB() = {

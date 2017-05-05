@@ -12,13 +12,13 @@ import view.helpers.LambdaHelper._
 import view.helpers.MainWindowHelper
 import view.utils.{Constants, DataBaseUtils}
 
-object MainWindow {
+object Main {
   def main(args: Array[String]) {
-    Application.launch(classOf[MainWindow], args: _*)
+    Application.launch(classOf[Main], args: _*)
   }
 }
 
-class MainWindow extends Application with MainWindowHelper {
+class Main extends Application with MainWindowHelper {
 
   override def start(primaryStage: Stage) { //TODO вынести primaryStage
     primaryStage.setTitle("Новый контакт")

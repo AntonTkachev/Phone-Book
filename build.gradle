@@ -1,8 +1,11 @@
-group 'ru.sbt.project'
+group 'Phone-Book'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
-
+apply plugin: 'scala'
+apply plugin: 'application'
+apply plugin: 'distribution'
+mainClassName = "view.Main"
 sourceCompatibility = 1.8
 
 repositories {
@@ -11,4 +14,13 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+distributions {
+    main {
+        contents {
+            from("DB.csv")
+            from("start.bat")
+        }
+    }
 }

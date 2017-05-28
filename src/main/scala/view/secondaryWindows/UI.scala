@@ -22,7 +22,7 @@ object UI {
 
   def clearContact(value: Button) = {
     value.setOnAction((e: ActionEvent) => {
-      if (item != null && item.nonEmpty) {
+      if (item != null && item.name.nonEmpty) {
         val clearContact = new ClearContact
         clearContact.one()
       }
@@ -41,7 +41,7 @@ object UI {
 
   def editContact(buttonEdit: Button) = {
     buttonEdit.setOnAction((e: ActionEvent) => {
-      if (item != null && item.nonEmpty) {
+      if (item != null && item.name.nonEmpty) {
         val selectContact = new ContactWindow
         selectContact.edit
       }

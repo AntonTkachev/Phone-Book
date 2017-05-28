@@ -3,8 +3,8 @@ package view.utils
 import java.io.{File, FileWriter}
 import java.util.Scanner
 import javafx.collections.FXCollections
-import javafx.scene.control.ListView
-
+import javafx.scene.control.{ListCell, ListView}
+import javafx.util.Callback
 
 object DataBaseUtils {
 
@@ -33,11 +33,27 @@ object DataBaseUtils {
     file.close()
   }
 
-  def updateList(list: ListView[String]) = {
+    def updateList(listView: ListView[IdName]) = {
+    lazy val sample = FXCollections.observableArrayList[IdName]
+    sample.clear()
+    listView.setCellFactory(new Callback[ListView[IdName], ListCell[IdName]]() {
+      override def call(param: ListView[IdName]): ListCell[IdName] = {
+        val cell = new ListCell[IdName]() {
+          override def updateItem(item: IdName, empty: Boolean): Unit = {
+            super.updateItem(item, empty)
+            if (item != null) setText(item.id)
+            else setText("")
+          }
+        }
+        cell
+      }
+    })
     val allItemsFromBD = DataBaseUtils.scanningDB()
-    lazy val name = FXCollections.observableArrayList("")
-    name.clear()
-    allItemsFromBD.foreach(item => name.add(item.split('|').head))
-    list.setItems(name)
+    allItemsFromBD.foreach({ item =>
+      val splitEl = item.split('|')
+      sample.add(IdName(splitEl.head, splitEl(1))
+      )
+    })
+    listView.setItems(sample)
   }
 }

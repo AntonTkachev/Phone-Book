@@ -5,7 +5,8 @@ import javafx.scene.control.Label
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.{AnchorPane, GridPane, VBox}
 
-import view.utils.{Constants, DataBaseUtils}
+import view.utils.Constants
+import view.workWithDB.ConnectTo
 
 object Display {
 
@@ -23,14 +24,16 @@ object Display {
         val pane = new GridPane()
         if (click.getClickCount == 1) {
           val indexSelectItem = listView.getSelectionModel.getSelectedIndex
+//          listView.setId("")
           if (indexSelectItem >= 0) {
-            val allItemsFromBD = DataBaseUtils.scanningDB()
-            val selectItemInBD: String = allItemsFromBD(indexSelectItem)
-            val firstName = selectItemInBD.split('|')
-            labelFirstName.setText(s"First Name:             ${firstName.head}") //TODO very bad!!!
-            labelLastName.setText(s"Last Name:             ${firstName(1)}")
-            labelNumber.setText(s"Number:                 ${firstName(2)}")
-            labelAddress.setText(s"Address:                 ${firstName(3)}")
+            val connectTo = new ConnectTo()
+            val idName = Constants.listView.getItems.get(indexSelectItem)
+            val selectItemInBD = connectTo.selectById(idName.ID)
+            connectTo.close()
+            labelFirstName.setText(s"First Name:             ${selectItemInBD.firstName}") //TODO very bad!!!
+            labelLastName.setText(s"Last Name:             ${selectItemInBD.lastName}")
+            labelNumber.setText(s"Number:                 ${selectItemInBD.number}")
+            labelAddress.setText(s"Address:                 ${selectItemInBD.address}")
             AnchorPane.setLeftAnchor(pane, 350d)
             AnchorPane.setTopAnchor(pane, 50d)
             pane.getChildren.clear()

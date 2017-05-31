@@ -3,33 +3,29 @@ package view.secondaryWindows
 import javafx.event.ActionEvent
 
 import view.helpers.UIHelper
-import view.utils.{Constants, DataBaseUtils}
-
+import view.utils.Constants
 import view.helpers.LambdaHelper._
+import view.workWithDB.ConnectTo
 
 class ClearContact extends UIHelper {
 
   val listView = Constants.listView
 
-  def one(): Unit = {
+  def connectTo = new ConnectTo()
+
+  def one : Unit = {
     val indexSelectItem = listView.getSelectionModel.getSelectedIndex
+    val idName = listView.getItems.get(indexSelectItem)
     listView.getItems.remove(indexSelectItem)
-    val allItemsFromBD = DataBaseUtils.scanningDB()
-    allItemsFromBD.update(indexSelectItem, "")
-    DataBaseUtils.clearDB()
-    for (i <- allItemsFromBD.indices) {
-      if (allItemsFromBD(i).nonEmpty) {
-        DataBaseUtils.writeToDB(s"${allItemsFromBD(i) + Constants.LINE_BREAK}") //TODO еще раз пересмотреть
-      }
-    }
+    connectTo.clearElement(idName.ID)
   }
 
   def all = {
     warningStage.show()
 
     buttonYes.setOnAction((e: ActionEvent) => {
-      DataBaseUtils.clearDB()
       listView.getItems.clear()
+      connectTo.clearAll()
       warningStage.close()
     })
 

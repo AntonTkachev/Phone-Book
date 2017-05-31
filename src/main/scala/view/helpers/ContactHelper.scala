@@ -5,15 +5,13 @@ import javafx.scene.control.{Button, Label, TextField}
 import javafx.scene.layout.{AnchorPane, HBox, VBox}
 import javafx.stage.Stage
 
-import view.utils.{Constants, DataBaseUtils}
+import view.utils.Constants
 
 trait ContactHelper {
   val changeStage = new Stage()
   val rootPane = new AnchorPane()
 
-  lazy val indexSelectItem = Constants.listView.getSelectionModel.getSelectedIndex
-  lazy val allItemsFromBD = DataBaseUtils.scanningDB()
-  lazy val selectItemInBD = allItemsFromBD(indexSelectItem)
+  lazy val indexSelectItem: Int = Constants.listView.getSelectionModel.getSelectedIndex
 
   lazy val buttonOK = new Button("OK")
   lazy val buttonCancel = new Button("Cancel")
@@ -22,10 +20,6 @@ trait ContactHelper {
   lazy val textFieldLastName = new TextField()
   lazy val textFieldNumber = new TextField()
   lazy val textFieldAddress = new TextField()
-
-  lazy val listWithTextField = List(textFieldFirstName, textFieldLastName, textFieldNumber, textFieldAddress)
-
-  lazy val arrayInfoContact = selectItemInBD.split('|')
 
   lazy val names = Array("First Name", "Last Name", "Number", "Address")
 
@@ -38,7 +32,8 @@ trait ContactHelper {
 
   def setTextToField(textFields: List[TextField], whatSet: Array[String]) = {
     var num = 0
-    textFields.foreach({ textFiled => textFiled.setText(whatSet(num))
+    textFields.foreach({ textFiled =>
+      textFiled.setText(whatSet(num))
       num = num + 1
     })
   }
@@ -68,5 +63,4 @@ trait ContactHelper {
 
   changeStage.setScene(new Scene(rootPane, 300, 300))
   changeStage.setResizable(false)
-  changeStage.show()
 }

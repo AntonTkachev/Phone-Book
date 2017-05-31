@@ -1,58 +1,32 @@
 package view.utils
 
-import java.io.{File, FileWriter}
-import java.util.Scanner
 import javafx.collections.FXCollections
 import javafx.scene.control.{ListCell, ListView}
 import javafx.util.Callback
 
+import view.workWithDB.ConnectTo
+
 object DataBaseUtils {
+  val sample = FXCollections.observableArrayList[IdName]()
 
-  val FILE_NAME = "DB.csv"
-  val DB_FILE = new File(FILE_NAME)
+  val connectTO = new ConnectTo()
 
-  def scanningDB() = {
-    val scanner = new Scanner(DB_FILE)
-    scanner.useDelimiter(",")
-    var contact: Array[String] = Array()
-    while (scanner.hasNext()) {
-      val allContactsFromBD = scanner.next()
-      contact = allContactsFromBD.split(Constants.LINE_BREAK)
-    }
-    contact
-  }
-
-  def writeToDB(str: String) = {
-    val file = new FileWriter(DB_FILE, true)
-    file.write(str)
-    file.close()
-  }
-
-  def clearDB() = {
-    val file = new FileWriter(DB_FILE, false)
-    file.close()
-  }
-
-    def updateList(listView: ListView[IdName]) = {
-    lazy val sample = FXCollections.observableArrayList[IdName]
+  def updateList(listView: ListView[IdName]) = {
     sample.clear()
+    connectTO.selectAll().map { elem => IdName(elem.ID.get, elem.firstName) }.foreach(sample.add)
     listView.setCellFactory(new Callback[ListView[IdName], ListCell[IdName]]() {
       override def call(param: ListView[IdName]): ListCell[IdName] = {
         val cell = new ListCell[IdName]() {
           override def updateItem(item: IdName, empty: Boolean): Unit = {
             super.updateItem(item, empty)
-            if (item != null) setText(item.id)
+            if (item != null) {
+              setText(item.name)
+            }
             else setText("")
           }
         }
         cell
       }
-    })
-    val allItemsFromBD = DataBaseUtils.scanningDB()
-    allItemsFromBD.foreach({ item =>
-      val splitEl = item.split('|')
-      sample.add(IdName(splitEl.head, splitEl(1))
-      )
     })
     listView.setItems(sample)
   }

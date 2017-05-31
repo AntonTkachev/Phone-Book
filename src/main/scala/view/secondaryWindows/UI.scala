@@ -24,7 +24,7 @@ object UI {
     value.setOnAction((e: ActionEvent) => {
       if (item != null && item.name.nonEmpty) {
         val clearContact = new ClearContact
-        clearContact.one()
+        clearContact.one
       }
       else
         WarningButton.ok("Не выбран контакт для удаления")
